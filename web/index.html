@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteRush - Enter the Code Forest</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="index-page">
+  <div class="stars-container"></div>
+  <div class="moon-glow"></div>
+
+  <main class="menu-panel glass-panel">
+    <header class="menu-header">
+      <h1 class="game-title">ByteRush</h1>
+      <p class="game-subtitle">Enter the Code Forest</p>
+    </header>
+
+    <section class="menu-content">
+      <p class="game-description">
+        Build mini websites and restore the forest using HTML, CSS, and JavaScript.
+      </p>
+
+      <section class="progress-card" aria-live="polite">
+        <div class="progress-copy">
+          <p class="progress-label">Journey status</p>
+          <p id="progress-text" class="progress-text">No journey started yet.</p>
+        </div>
+        <div class="progress-meter" aria-hidden="true">
+          <span id="progress-bar" class="progress-bar"></span>
+        </div>
+      </section>
+
+      <div class="button-group">
+        <button id="startAdventure" class="btn btn-primary glow-hover">Start Adventure</button>
+        <button id="continueJourney" class="btn btn-secondary glow-hover">Continue Journey</button>
+        <button id="resetJourney" class="btn btn-danger glow-hover">Reset Journey</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
