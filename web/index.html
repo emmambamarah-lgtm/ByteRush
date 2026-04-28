@@ -10,17 +10,36 @@
   <div class="stars-container"></div>
   <div class="moon-glow"></div>
 
-
-  <main id="start-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center;">
-    <div id="eyebrow" style="color:#a4b5d9;font-size:1.05rem;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;"></div>
-    <h1 id="main-title" style="font-family:'Courier New',monospace;font-size:clamp(3.2rem,7vw,5.2rem);letter-spacing:0.09em;text-transform:uppercase;color:#9ddcff;text-shadow:0 0 0 rgba(0,0,0,0),0 0 18px rgba(103,232,249,0.25);margin-bottom:10px;">ByteRush</h1>
-    <div id="subtitle" style="color:#d9c9ff;font-size:1.25rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:18px;">Coding Adventure</div>
-    <div id="description" style="color:#b7c5ea;font-size:1.13rem;line-height:1.7;margin-bottom:32px;">Build. Explore. Restore the forest.</div>
-    <button id="mainJourneyBtn" class="btn btn-primary glow-hover" style="min-width:220px;font-size:1.18rem;margin-bottom:38px;"></button>
-    <div style="flex:1 1 0;"></div>
-    <a id="resetJourney" href="#" style="font-size:1.01rem;color:#b7c5ea;opacity:0.7;text-decoration:underline;margin-top:32px;">Reset Journey</a>
+  <main class="main-home">
+    <div class="home-shell">
+      <div class="journey-list">
+        <div class="journey-card glass-panel">
+          <div class="journey-card-title">HTML Forest</div>
+          <div class="journey-card-desc">Build the structure of your first web pages.</div>
+          <button class="btn btn-primary glow-hover journey-start-btn" onclick="window.location.href='L1-html.html'">Get Started</button>
+        </div>
+        <div class="journey-card glass-panel">
+          <div class="journey-card-title">CSS Grove</div>
+          <div class="journey-card-desc">Add colors, spacing, and style to your designs.</div>
+          <button class="btn btn-primary glow-hover journey-start-btn" onclick="window.location.href='L2-css.html'">Get Started</button>
+        </div>
+        <div class="journey-card glass-panel">
+          <div class="journey-card-title">JavaScript Lightning Core</div>
+          <div class="journey-card-desc">Make your pages respond and come alive.</div>
+          <button class="btn btn-primary glow-hover journey-start-btn" onclick="window.location.href='L3-js.html'">Get Started</button>
+        </div>
+      </div>
+      <div class="home-hero">
+        <h1 class="main-title">ByteRush</h1>
+        <div class="subtitle">Start your coding journey</div>
+        <div class="description">Build, style, and bring websites to life through HTML, CSS, and JavaScript adventures.</div>
+        <button class="btn btn-primary glow-hover main-html-btn" onclick="window.location.href='L1-html.html'">Start with HTML</button>
+        <a id="resetJourney" href="#" class="reset-link">Reset Journey</a>
+      </div>
+    </div>
   </main>
 
   <script src="script.js"></script>
+</body>
 </body>
 </html>

@@ -1055,9 +1055,10 @@ const game = {
   },
 
   showCompletionScreen() {
-    // Détecte le contexte (HTML ou CSS)
+    // Détecte le contexte (HTML, CSS, JS)
     const isHtmlLevel = window.location.pathname.includes("L1-html.html");
     const isCssLevel = window.location.pathname.includes("L2-css.html");
+    const isJsLevel = window.location.pathname.includes("L3-js.html");
     const progress = loadJourneyProgress();
 
     if (isHtmlLevel) {
@@ -1068,30 +1069,38 @@ const game = {
       progress.cssComplete = true;
       progress.currentWorld = "js";
       saveJourneyProgress(progress);
+    } else if (isJsLevel) {
+      progress.jsComplete = true;
+      progress.currentWorld = "complete";
+      saveJourneyProgress(progress);
     }
 
     const completionScreen = document.getElementById("completion-screen");
     if (completionScreen) {
       completionScreen.style.display = "flex";
 
-      // Ajoute le bouton de progression si besoin
-      if (isHtmlLevel && !document.getElementById("continue-grove-btn")) {
-        const btn = document.createElement("button");
-        btn.id = "continue-grove-btn";
-        btn.className = "btn btn-primary glow-hover";
-        btn.textContent = "Continue to Color Grove";
-        btn.onclick = function () { window.location.href = "L2-css.html"; };
-        const group = completionScreen.querySelector(".button-group") || completionScreen;
-        group.insertBefore(btn, group.firstChild);
-      }
-      if (isCssLevel && !document.getElementById("continue-core-btn")) {
-        const btn = document.createElement("button");
-        btn.id = "continue-core-btn";
-        btn.className = "btn btn-primary glow-hover";
-        btn.textContent = "Continue to Lightning Core";
-        btn.onclick = function () { window.location.href = "L3-js.html"; };
-        const group = completionScreen.querySelector(".button-group, .grove-completion-actions") || completionScreen;
-        group.insertBefore(btn, group.firstChild);
+      // Supprime les boutons de progression directe
+      const btnContinueGrove = document.getElementById("continue-grove-btn");
+      if (btnContinueGrove) btnContinueGrove.remove();
+      const btnContinueCore = document.getElementById("continue-core-btn");
+      if (btnContinueCore) btnContinueCore.remove();
+
+      // Ajoute/active uniquement le bouton Return to Camp
+      let btnReturn = document.getElementById("return-forest-btn");
+      if (!btnReturn) {
+        // Cherche le groupe de boutons
+        const group = completionScreen.querySelector(".button-group, .grove-completion-actions, .core-completion-actions") || completionScreen;
+        btnReturn = document.createElement("button");
+        btnReturn.id = "return-forest-btn";
+        btnReturn.className = "btn btn-primary glow-hover";
+        btnReturn.textContent = "Return to Camp";
+        btnReturn.onclick = function () { window.location.href = "index.html"; };
+        group.insertBefore(btnReturn, group.firstChild);
+      } else {
+        btnReturn.textContent = "Return to Camp";
+        btnReturn.onclick = function () { window.location.href = "index.html"; };
+        btnReturn.disabled = false;
+        btnReturn.style.display = "";
       }
     }
   },
