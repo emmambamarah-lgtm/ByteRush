@@ -1,3 +1,298 @@
+// === Lightning Core (JS Level) ===
+(function () {
+  if (!window.location.pathname.includes('L3-js.html')) return;
+
+  // --- State ---
+  const JS_STORAGE_KEY = 'byterush_js_player';
+  const PROGRESS_KEY = 'byterush_progress';
+  const ENERGY_PER_MISSION = 30;
+  const missions = [
+    {
+      id: 'js-m1',
+      title: 'Mission 1: The Sleeping Crystal',
+      narrator: 'A sleeping crystal waits for a spark. Give it words to wake up.',
+      guide: [
+        'buttonText → Wake the crystal',
+        'crystalMessage → The crystal is awake.'
+      ],
+      starter: 'const buttonText = "write button words here";\nconst crystalMessage = "write crystal message here";',
+      button: 'Wake the Crystal',
+      validate: (fields) => {
+        if (fields.buttonText !== 'Wake the crystal') return { valid: false, msg: 'Change buttonText to Wake the crystal.' };
+        if (fields.crystalMessage !== 'The crystal is awake.') return { valid: false, msg: 'Change crystalMessage to The crystal is awake.' };
+        return { valid: true };
+      },
+      learn: ['const stores a value', 'JavaScript can change what appears on the page'],
+      preview: (fields, valid) => `
+        <div class="core-scene">
+          <div class="energy-crystal${valid ? '' : ' dim'}"></div>
+          <div class="core-message">${escape(fields.crystalMessage)}</div>
+          <button class="core-button-preview">${escape(fields.buttonText)}</button>
+        </div>
+      `
+    },
+    {
+      id: 'js-m2',
+      title: 'Mission 2: The Echo Chamber',
+      narrator: 'The Core repeats what it hears. Give the echo a voice.',
+      guide: [
+        'visitorName → Luna',
+        'echoMessage → Welcome to the Core, Luna.'
+      ],
+      starter: 'const visitorName = "write a name here";\nconst echoMessage = "write echo message here";',
+      button: 'Give It Voice',
+      validate: (fields) => {
+        if (fields.visitorName !== 'Luna') return { valid: false, msg: 'Change visitorName to Luna.' };
+        if (fields.echoMessage !== 'Welcome to the Core, Luna.') return { valid: false, msg: 'Change echoMessage to Welcome to the Core, Luna.' };
+        return { valid: true };
+      },
+      learn: ['variables can store text', 'JavaScript can display messages'],
+      preview: (fields, valid) => `
+        <div class="core-scene">
+          <div class="core-message">Visitor: <b>${escape(fields.visitorName)}</b></div>
+          <div class="core-message${valid ? ' success-pulse' : ''}">${escape(fields.echoMessage)}</div>
+        </div>
+      `
+    },
+    {
+      id: 'js-m3',
+      title: 'Mission 3: The Changing Light',
+      narrator: 'The light crystal waits for its color. Set the glow.',
+      guide: [
+        'crystalColor → cyan',
+        'glowPower → strong'
+      ],
+      starter: 'const crystalColor = "choose color here";\nconst glowPower = "choose glow power here";',
+      button: 'Change the Light',
+      validate: (fields) => {
+        if (fields.crystalColor !== 'cyan') return { valid: false, msg: 'Change crystalColor to cyan.' };
+        if (fields.glowPower !== 'strong') return { valid: false, msg: 'Change glowPower to strong.' };
+        return { valid: true };
+      },
+      learn: ['JavaScript values can control styles', 'changing values can change what the player sees'],
+      preview: (fields, valid) => {
+        let classes = 'energy-crystal';
+        if (fields.crystalColor === 'cyan') classes += ' cyan';
+        if (fields.glowPower === 'strong') classes += ' strong';
+        if (!valid) classes += ' dim';
+        return `
+          <div class="core-scene">
+            <div class="${classes}"></div>
+            <div class="core-message">Color: <b>${escape(fields.crystalColor)}</b></div>
+            <div class="core-message">Glow: <b>${escape(fields.glowPower)}</b></div>
+          </div>
+        `;
+      }
+    },
+    {
+      id: 'js-m4',
+      title: 'Mission 4: The Living Core',
+      narrator: 'The Core is ready. Bring the chamber to life.',
+      guide: [
+        'heroName → Code Keeper',
+        'actionText → Activate the Core',
+        'powerColor → violet',
+        'finalMessage → The Lightning Core is alive.'
+      ],
+      starter: 'const heroName = "write hero name here";\nconst actionText = "write action button here";\nconst powerColor = "write power color here";\nconst finalMessage = "write final message here";',
+      button: 'Awaken the Core',
+      validate: (fields) => {
+        if (fields.heroName !== 'Code Keeper') return { valid: false, msg: 'Change heroName to Code Keeper.' };
+        if (fields.actionText !== 'Activate the Core') return { valid: false, msg: 'Change actionText to Activate the Core.' };
+        if (fields.powerColor !== 'violet') return { valid: false, msg: 'Change powerColor to violet.' };
+        if (fields.finalMessage !== 'The Lightning Core is alive.') return { valid: false, msg: 'Change finalMessage to The Lightning Core is alive.' };
+        return { valid: true };
+      },
+      learn: ['JavaScript can update text', 'JavaScript can control page behavior'],
+      preview: (fields, valid) => {
+        let classes = 'energy-crystal';
+        if (fields.powerColor === 'violet') classes += ' violet';
+        if (fields.powerColor === 'violet' && valid) classes += ' strong';
+        if (!valid) classes += ' dim';
+        return `
+          <div class="core-scene">
+            <div class="${classes}"></div>
+            <div class="core-message">${escape(fields.heroName)}</div>
+            <button class="core-button-preview">${escape(fields.actionText)}</button>
+            <div class="core-message">${escape(fields.finalMessage)}</div>
+          </div>
+        `;
+      }
+    }
+  ];
+
+  // --- State Management ---
+  let state = loadState();
+  let pendingMissionResult = null;
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(JS_STORAGE_KEY)) || {
+        energy: 0,
+        currentMissionIdx: 0,
+        completedMissions: []
+      };
+    } catch {
+      return { energy: 0, currentMissionIdx: 0, completedMissions: [] };
+    }
+  }
+  function saveState() {
+    localStorage.setItem(JS_STORAGE_KEY, JSON.stringify(state));
+  }
+
+  // --- Mission Loading ---
+  function loadMission(idx) {
+    if (idx >= missions.length) {
+      showCompletionScreen();
+      return;
+    }
+    state.currentMissionIdx = idx;
+    const mission = missions[idx];
+    document.getElementById('js-mission-indicator').textContent = `Mission ${idx + 1} / 4`;
+    document.getElementById('js-energy-current').textContent = `${state.energy} / 120`;
+    document.getElementById('js-mission-title').textContent = mission.title;
+    document.getElementById('js-mission-narrator').innerHTML = `<span class="mission-copy">${escape(mission.narrator)}</span><span class="mission-label mission-guide-label">Guide</span>${mission.guide.map(line => `<div class="guide-line">${escape(line)}</div>`).join('')}`;
+    document.getElementById('js-action-btn').textContent = mission.button;
+    document.getElementById('js-action-btn').disabled = false;
+    document.getElementById('js-code-input').value = mission.starter;
+    document.getElementById('js-message-area').textContent = '';
+    document.getElementById('js-message-area').className = '';
+    document.getElementById('js-mission-complete-overlay').classList.remove('active');
+    document.getElementById('js-transition-overlay').classList.remove('active');
+    document.getElementById('js-completion-screen').style.display = 'none';
+    updatePreview();
+    saveState();
+    pendingMissionResult = null;
+  }
+
+  // --- Code Extraction ---
+  function extractFields(code, missionIdx) {
+    // Extract all const string assignments (robust to spaces, semicolons, order)
+    const mission = missions[missionIdx];
+    const result = {};
+    for (const field of Object.keys(mission.starter.split('\n').reduce((acc, line) => { const m = line.match(/const (\w+)/); if (m) acc[m[1]] = true; return acc; }, {}))) {
+      const re = new RegExp(`const\\s+${field}\\s*=\\s*"([^"]*)"`, 'i');
+      const match = code.match(re);
+      result[field] = match ? match[1] : '';
+    }
+    // For legacy/typo: support both crystalMessage/message, inputName/visitorName
+    if (missionIdx === 0 && !result.crystalMessage) {
+      const m = code.match(/const\\s+message\\s*=\\s*"([^"]*)"/i); if (m) result.crystalMessage = m[1];
+    }
+    if (missionIdx === 1 && !result.visitorName) {
+      const m = code.match(/const\\s+inputName\\s*=\\s*"([^"]*)"/i); if (m) result.visitorName = m[1];
+    }
+    if (missionIdx === 1 && !result.echoMessage) {
+      const m = code.match(/const\\s+echoMessage\\s*=\\s*"([^"]*)"/i); if (m) result.echoMessage = m[1];
+    }
+    return result;
+  }
+
+  // --- Preview ---
+  function updatePreview() {
+    const idx = state.currentMissionIdx;
+    const mission = missions[idx];
+    const code = document.getElementById('js-code-input').value;
+    const fields = extractFields(code, idx);
+    const valid = mission.validate(fields).valid;
+    document.getElementById('js-preview').innerHTML = mission.preview(fields, valid);
+  }
+
+  // --- Validation & Progression ---
+  function checkSolution() {
+    const idx = state.currentMissionIdx;
+    const mission = missions[idx];
+    const code = document.getElementById('js-code-input').value;
+    const fields = extractFields(code, idx);
+    const result = mission.validate(fields);
+    if (!result.valid) {
+      showMessage(result.msg, true);
+      return;
+    }
+    if (!state.completedMissions.includes(mission.id)) {
+      state.completedMissions.push(mission.id);
+      state.energy += ENERGY_PER_MISSION;
+    }
+    saveState();
+    showMissionComplete(mission, result);
+    pendingMissionResult = { mission, result };
+    document.getElementById('js-action-btn').disabled = true;
+    document.getElementById('js-energy-current').textContent = `${state.energy} / 120`;
+  }
+
+  function showMessage(msg, isError) {
+    const area = document.getElementById('js-message-area');
+    area.textContent = msg;
+    area.className = isError ? 'msg-error' : 'msg-success';
+  }
+
+  function showMissionComplete(mission, result) {
+    document.getElementById('js-mission-complete-message').textContent = mission.successMsg;
+    document.getElementById('js-mission-complete-learn').innerHTML = mission.learn.map(l => `<div class="success-learn">${escape(l)}</div>`).join('');
+    document.getElementById('js-mission-complete-energy').textContent = `+${ENERGY_PER_MISSION} Core Energy restored`;
+    document.getElementById('js-mission-complete-overlay').classList.add('active');
+  }
+
+  function closeMissionComplete() {
+    document.getElementById('js-mission-complete-overlay').classList.remove('active');
+  }
+
+  function continueAfterMission() {
+    if (!pendingMissionResult) return;
+    closeMissionComplete();
+    playTransition();
+  }
+
+  function playTransition() {
+    const overlay = document.getElementById('js-transition-overlay');
+    const text = document.getElementById('js-transition-text');
+    overlay.classList.add('active');
+    text.textContent = 'The core hums...';
+    setTimeout(() => {
+      text.textContent = 'The energy shifts...';
+      setTimeout(() => {
+        pendingMissionResult = null;
+        loadMission(state.currentMissionIdx + 1);
+        setTimeout(() => overlay.classList.remove('active'), 500);
+      }, 1200);
+    }, 1200);
+  }
+
+  function showCompletionScreen() {
+    // Mark journey progress
+    let progress = {};
+    try { progress = JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; } catch {}
+    progress.jsComplete = true;
+    progress.currentWorld = 'complete';
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    document.getElementById('js-completion-screen').style.display = 'flex';
+    document.getElementById('js-completion-energy-total').textContent = `${state.energy} / 120`;
+  }
+
+  function replayCore() {
+    state.currentMissionIdx = 0;
+    pendingMissionResult = null;
+    saveState();
+    loadMission(0);
+  }
+
+  // --- Helpers ---
+  function escape(str) {
+    return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // --- Event Listeners ---
+  document.getElementById('js-code-input').addEventListener('input', updatePreview);
+  document.getElementById('js-action-btn').addEventListener('click', checkSolution);
+  document.getElementById('js-mission-complete-continue').addEventListener('click', continueAfterMission);
+  document.getElementById('js-return-camp-btn').addEventListener('click', () => { window.location.href = 'index.html'; });
+  document.getElementById('js-replay-btn').addEventListener('click', replayCore);
+  // Back to Camp (HUD)
+  document.getElementById('js-back-camp').addEventListener('click', () => { window.location.href = 'index.html'; });
+
+  // --- Init ---
+  loadMission(state.currentMissionIdx);
+})();
 // === Gestion des boutons de navigation de la homepage ===
 document.getElementById("startHtmlJourney")?.addEventListener("click", () => {
   window.location.href = "L1-html.html";
@@ -1496,11 +1791,8 @@ const cssLevel = {
   ],
 
   init() {
-    const progress = loadJourneyProgress();
-    if (!progress.htmlComplete) {
-      window.location.href = "index.html";
-      return;
-    }
+    // Suppression du redirect automatique vers index.html pour L2-css.html
+    // La page reste accessible même si htmlComplete n'est pas true
 
     this.loadCssState();
     this.configureCssEditor();
@@ -2298,11 +2590,8 @@ const jsLevel = {
   ],
 
   init() {
-    const progress = loadJourneyProgress();
-    if (!progress.cssComplete) {
-      window.location.href = "index.html";
-      return;
-    }
+    // Suppression du redirect automatique vers index.html pour L3-js.html
+    // La page reste accessible même si cssComplete n'est pas true
 
     if (!progress.jsComplete) {
       progress.currentWorld = "js";
