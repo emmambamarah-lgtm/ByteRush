@@ -1,3 +1,26 @@
+/* === Feedback Messages for HTML Forest === */
+.msg-error {
+  color: #ff7a7a;
+  background: rgba(255, 122, 122, 0.08);
+  border-radius: 7px;
+  padding: 7px 12px;
+  margin: 8px 0 0 0;
+  font-weight: 600;
+  font-size: 1.04rem;
+  border: 1.5px solid #ff7a7a33;
+  box-shadow: 0 2px 12px #ff7a7a22;
+}
+.msg-success {
+  color: #62d26f;
+  background: rgba(98, 210, 111, 0.08);
+  border-radius: 7px;
+  padding: 7px 12px;
+  margin: 8px 0 0 0;
+  font-weight: 600;
+  font-size: 1.04rem;
+  border: 1.5px solid #62d26f33;
+  box-shadow: 0 2px 12px #62d26f22;
+}
 .stars-container,
 .moon-glow,
 .forest-bg,
@@ -40,11 +63,10 @@
 }
 .journey-card {
   min-width: 0;
-  width: 260px;
+  width: 280px;
   max-width: 300px;
-  min-height: 120px;
-  max-height: 135px;
-  height: 128px;
+  min-height: 130px;
+  height: 130px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -68,11 +90,11 @@
 }
 
 .journey-card-cta {
-  display: block;
-  margin-top: 8px;
-  color: var(--moon-blue);
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 0.9rem;
   font-weight: 700;
-  font-size: 0.97rem;
+  color: var(--moon-blue);
   background: rgba(103,232,249,0.08);
   border-radius: 8px;
   padding: 4px 0 2px 0;
@@ -101,22 +123,75 @@
   filter: drop-shadow(0 0 8px #a7f3d0cc);
 }
 /* === CSS Grove Soft Palette === */
+/* === CSS Grove Magical Scene === */
 .grove-scene {
-  background: none !important;
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  background:
+    radial-gradient(circle at 60% 20%, rgba(200,182,255,0.13), transparent 60%),
+    radial-gradient(circle at 20% 80%, rgba(245,183,210,0.10), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(4,8,11,0.18));
+  border: 1px solid rgba(249, 168, 212, 0.18);
 }
+.petal {
+  position: absolute;
+  border-radius: 999px;
+  opacity: 0.7;
+  filter: blur(0.5px);
+  pointer-events: none;
+}
+.petal1 { width: 80px; height: 32px; background: #f5b7d2; top: 18%; left: 18%; transform: rotate(-18deg); }
+.petal2 { width: 60px; height: 22px; background: #a78bfa; top: 12%; right: 22%; transform: rotate(12deg); }
+.petal3 { width: 90px; height: 28px; background: #c8b6ff; bottom: 18%; left: 14%; transform: rotate(8deg); }
+.petal4 { width: 70px; height: 24px; background: #f9a8d4; bottom: 14%; right: 18%; transform: rotate(-10deg); }
 .magic-card {
-  background: #2A1B4A !important;
-  color: #F8F6FF !important;
-  border: 2px solid #C8B6FF !important;
-  box-shadow: 0 0 24px rgba(200, 182, 255, 0.18);
+  position: relative;
+  z-index: 1;
+  width: min(100%, 420px);
+  margin: 0;
+  padding: 20px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 14px rgba(134, 239, 172, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: left;
+  transform: translateY(0) scale(1);
+  transition: all 0.3s ease;
 }
 .magic-card h1 {
-  color: #F5B7D2 !important;
+  color: #f9a8d4;
+  font-size: 1.8rem;
+  margin: 0 0 10px;
+  transition: all 0.3s ease;
+}
+.magic-card p {
+  margin: 0 0 18px;
+  line-height: 1.6;
+  color: #d8d1ef;
+  transition: all 0.3s ease;
 }
 .magic-card button {
-  background: #A78BFA !important;
-  color: #F8F6FF !important;
-  border-radius: 999px !important;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #93c5fd, #8b5cf6);
+  color: #100b24;
+  font-weight: 700;
+  cursor: pointer;
+  transform: translateY(0) scale(1);
+  box-shadow: 0 10px 22px rgba(9, 4, 20, 0.18);
+  transition: all 0.3s ease;
+}
+.magic-card button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(147, 197, 253, 0.2);
 }
 /* === Lightning Core Victory Sparkles === */
 .core-victory-sparkle {
@@ -2171,3 +2246,5 @@ body.core-page {
     min-height: 300px;
   }
 }
+
+/* Correction : accolade fermante manquante */

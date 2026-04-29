@@ -1,36 +1,147 @@
-// Validation flow pour chaque niveau :
+// === HTML Forest Button Wiring (STRICT DEBUG FLOW) ===
 document.addEventListener("DOMContentLoaded", function () {
-  // HTML Forest
-  const htmlBtn = document.getElementById("html-action-btn") || document.getElementById("action-btn");
-  if (htmlBtn && window.game && typeof window.game.checkSolution === "function") {
-    htmlBtn.disabled = false;
-    htmlBtn.addEventListener("click", function () {
-      console.log("HTML action clicked");
-      const result = window.game.checkSolution();
-      console.log("Validation result:", result);
-    });
-  }
-  // CSS Grove
-  const cssBtn = document.getElementById("css-action-btn");
-  if (cssBtn && window.game && typeof window.game.checkCssSolution === "function") {
-    cssBtn.disabled = false;
-    cssBtn.addEventListener("click", function () {
-      console.log("CSS action clicked");
-      const result = window.game.checkCssSolution();
-      console.log("Validation result:", result);
-    });
-  }
-  // JS Core
-  const jsBtn = document.getElementById("js-action-btn");
-  if (jsBtn && window.game && typeof window.game.checkJsSolution === "function") {
-    jsBtn.disabled = false;
-    jsBtn.addEventListener("click", function () {
-      console.log("JS action clicked");
-      const result = window.game.checkJsSolution();
-      console.log("Validation result:", result);
+  const htmlButton = document.getElementById("html-action-btn") || document.getElementById("action-btn");
+  if (htmlButton) {
+    htmlButton.type = "button";
+    htmlButton.disabled = false;
+    htmlButton.style.pointerEvents = "auto";
+    htmlButton.addEventListener("click", function () {
+      console.log("HTML FOREST BUTTON CLICKED");
+      if (window.game && typeof window.game.checkSolution === "function") {
+        window.game.checkSolution();
+        return;
+      }
+      if (typeof game !== "undefined" && typeof game.checkSolution === "function") {
+        game.checkSolution();
+        return;
+      }
+      console.error("checkSolution function was not found.");
     });
   }
 });
+
+// === HTML Forest checkSolution (STRICT DEBUG FLOW) ===
+if (!window.game) window.game = {};
+window.game.checkSolution = function() {
+  // 1. Get current mission
+  const gameObj = window.game;
+  const missions = gameObj.missions || (typeof missions !== 'undefined' ? missions : null);
+  const state = gameObj.state || (typeof state !== 'undefined' ? state : null);
+  if (!missions || !state) {
+    console.error("missions or state not found");
+    return;
+  }
+  const mission = missions[state.currentMissionIdx];
+  if (!mission) {
+    console.error("current mission not found");
+    return;
+  }
+  // 2. Get code from editor
+  const editor = document.getElementById("code-input") || document.getElementById("html-code-input") || document.getElementById("code-puzzle");
+  if (!editor) {
+    console.error("HTML editor not found");
+    return;
+  }
+  let code = '';
+  if ('value' in editor) {
+    code = editor.value;
+  } else if ('textContent' in editor) {
+    code = editor.textContent;
+  } else {
+    console.error("Unable to get code from editor");
+    return;
+  }
+  // 3. Extract fields from code (parse HTML)
+  let fields = {};
+  try {
+    const doc = new DOMParser().parseFromString(code, "text/html");
+    fields = {
+      heading: doc.querySelector("h1")?.textContent?.trim() || "",
+      paragraph: doc.querySelector("p")?.textContent?.trim() || "",
+      items: Array.from(doc.querySelectorAll("li")).map(li => li.textContent.trim()),
+      imageSrc: doc.querySelector("img")?.getAttribute("src")?.trim() || "",
+      imageAlt: doc.querySelector("img")?.getAttribute("alt")?.trim() || "",
+      linkHref: doc.querySelector("a")?.getAttribute("href")?.trim() || "",
+      linkText: doc.querySelector("a")?.textContent?.trim() || ""
+    };
+  } catch (e) {
+    console.error("HTML parse error", e);
+    fields = {};
+  }
+  // 4. Run validation with fields
+  let result = null;
+  try {
+    result = mission.validate ? mission.validate(fields) : null;
+  } catch (e) {
+    console.error("Validation error:", e);
+    result = { valid: false, msg: "Validation error." };
+  }
+  if (!result || typeof result.valid === "undefined") {
+    console.error("Validation did not return a result");
+    return;
+  }
+  // 5. Show feedback
+  const msg = document.getElementById("message-area") || document.getElementById("html-message-area");
+  if (!result.valid) {
+    if (msg) {
+      msg.textContent = result.msg || "Incorrect.";
+      msg.classList.remove("msg-success");
+      msg.classList.add("msg-error");
+    } else {
+      console.error("message area not found");
+    }
+    return;
+  }
+  // 6. On success: show success, award energy, save, show modal or next mission
+  if (msg) {
+    msg.textContent = mission.successMsg || "Mission Complete!";
+    msg.classList.remove("msg-error");
+    msg.classList.add("msg-success");
+  }
+  if (!state.completedMissions.includes(mission.id)) {
+    state.completedMissions.push(mission.id);
+    state.energy += (typeof ENERGY_PER_MISSION !== 'undefined' ? ENERGY_PER_MISSION : 30);
+  }
+  if (typeof gameObj.saveState === "function") gameObj.saveState();
+  // Modal fallback
+  const modal = document.getElementById("mission-complete-overlay");
+  if (modal) {
+    modal.classList.add("active");
+    const msgEl = document.getElementById("mission-complete-message");
+    if (msgEl) msgEl.textContent = mission.successMsg || "Mission Complete!";
+    const learn = document.getElementById("mission-complete-learn");
+    if (learn && Array.isArray(mission.learn)) {
+      learn.innerHTML = mission.learn.map(item => `<div class='success-learn'>${item}</div>`).join("");
+    }
+    const energy = document.getElementById("mission-complete-energy");
+    if (energy) energy.textContent = "+30 Forest Energy restored";
+    // Continue button wiring
+    const cont = document.getElementById("mission-complete-continue");
+    if (cont) {
+      cont.onclick = function() {
+        modal.classList.remove("active");
+        state.currentMissionIdx += 1;
+        if (typeof gameObj.saveState === "function") gameObj.saveState();
+        if (typeof gameObj.loadMission === "function") {
+          gameObj.loadMission(state.currentMissionIdx);
+        } else if (typeof loadMission === "function") {
+          loadMission(state.currentMissionIdx);
+        }
+      };
+    }
+  } else {
+    // No modal: fallback to next mission after 1s
+    setTimeout(function() {
+      state.currentMissionIdx += 1;
+      if (typeof gameObj.saveState === "function") gameObj.saveState();
+      if (typeof gameObj.loadMission === "function") {
+        gameObj.loadMission(state.currentMissionIdx);
+      } else if (typeof loadMission === "function") {
+        loadMission(state.currentMissionIdx);
+      }
+    }, 1000);
+  }
+};
 // === Lightning Core (JS Level) ===
 (function () {
   if (!window.location.pathname.includes('L3-js.html')) return;
@@ -1592,29 +1703,72 @@ const game = {
   },
 
   checkSolution() {
+    // --- HTML Forest: utilise le bon champ d'édition et la bonne zone de message ---
+    const isHtmlLevel = window.location.pathname.includes("L1-html.html");
     const mission = this.missions[this.state.currentMissionIdx];
-    if (!mission) {
-      return;
-    }
+    if (!mission) return;
 
     this.updatePreview();
-    const values = this.getMissionValues(this.getCurrentCode(), mission);
-    const result = mission.validate(values, this);
-
-    if (!result.valid) {
-      this.showMessage(result.msg, true);
-      return;
+    let code = "";
+    if (isHtmlLevel) {
+      const codeInput = document.getElementById("code-input");
+      code = codeInput ? codeInput.value : this.currentCode;
+    } else {
+      code = this.getCurrentCode();
     }
-
+    const values = this.getMissionValues(code, mission);
+    const result = mission.validate(values, this);
+    // Affiche le feedback dans la bonne zone
+    if (!result.valid) {
+      if (isHtmlLevel) {
+        const messageArea = document.getElementById("message-area");
+        if (messageArea) {
+          messageArea.textContent = result.msg;
+          messageArea.className = "msg-error";
+        }
+      } else {
+        this.showMessage(result.msg, true);
+      }
+      return result;
+    }
     if (!this.state.completedMissions.includes(mission.id)) {
       this.state.completedMissions.push(mission.id);
       this.state.energy += ENERGY_PER_MISSION;
     }
-
     this.pendingMissionResult = result;
     this.saveState();
     this.updateHUD();
-    this.showMissionComplete(result);
+    // Affiche la modale ou le message de succès
+    if (isHtmlLevel) {
+      const overlay = document.getElementById("mission-complete-overlay");
+      if (overlay) {
+        overlay.classList.add("active");
+        // Remplit le message de succès
+        const msg = document.getElementById("mission-complete-message");
+        if (msg) msg.textContent = mission.successMsg || "Mission Complete!";
+        const learn = document.getElementById("mission-complete-learn");
+        if (learn && Array.isArray(mission.learn)) {
+          learn.innerHTML = mission.learn.map(item => `<div class='success-learn'>${this.escapeHtml(item)}</div>`).join("");
+        }
+        const energy = document.getElementById("mission-complete-energy");
+        if (energy) energy.textContent = "+30 Forest Energy restored";
+      } else {
+        const messageArea = document.getElementById("message-area");
+        if (messageArea) {
+          messageArea.textContent = mission.successMsg || "Mission Complete!";
+          messageArea.className = "msg-success";
+        }
+        // Transition vers la mission suivante après un court délai
+        setTimeout(() => {
+          this.state.currentMissionIdx += 1;
+          this.saveState();
+          this.loadMission(this.state.currentMissionIdx);
+        }, 1200);
+      }
+    } else {
+      this.showMissionComplete(result);
+    }
+    return result;
   },
 
   getPreviewContext() {
@@ -1777,12 +1931,16 @@ const game = {
   },
 
   continueAfterMissionComplete() {
-    if (!this.pendingMissionResult) {
-      return;
-    }
-
+    if (!this.pendingMissionResult) return;
     this.closeMissionComplete();
-    this.playTransition();
+    // HTML Forest : transition vers la mission suivante
+    if (window.location.pathname.includes("L1-html.html")) {
+      this.state.currentMissionIdx += 1;
+      this.saveState();
+      this.loadMission(this.state.currentMissionIdx);
+    } else {
+      this.playTransition();
+    }
   },
 
   playTransition() {
@@ -2111,9 +2269,9 @@ const cssLevel = {
       title: "Mission 1: The Grey Grove",
       narrator: "The grove has lost its colors. Paint it gently.",
       guideLines: [
-        "choose_background_color -> #1A1235",
-        "choose_text_color -> #F8F6FF",
-        "choose_title_color -> #F5B7D2"
+        "choose_background_color → purple",
+        "choose_text_color → white",
+        "choose_title_color → pink"
       ],
       starterCode: "body {\n  background: choose_background_color;\n  color: choose_text_color;\n}\n\nh1 {\n  color: choose_title_color;\n}",
       buttonText: "Paint the Grove",
@@ -2122,14 +2280,14 @@ const cssLevel = {
       validate(context, level) {
         const bodyStyle = level.getStyle(context.body);
         const titleStyle = level.getStyle(context.title);
-        if (!level.propertyMatches(bodyStyle.backgroundColor, "backgroundColor", "#1A1235")) {
-          return { valid: false, msg: "Change choose_background_color to #1A1235." };
+        if (!level.propertyMatches(bodyStyle.backgroundColor, "backgroundColor", "purple")) {
+          return { valid: false, msg: "Change choose_background_color to purple." };
         }
-        if (!level.propertyMatches(bodyStyle.color, "color", "#F8F6FF")) {
-          return { valid: false, msg: "Change choose_text_color to #F8F6FF." };
+        if (!level.propertyMatches(bodyStyle.color, "color", "white")) {
+          return { valid: false, msg: "Change choose_text_color to white." };
         }
-        if (!level.propertyMatches(titleStyle.color, "color", "#F5B7D2")) {
-          return { valid: false, msg: "Change choose_title_color to #F5B7D2." };
+        if (!level.propertyMatches(titleStyle.color, "color", "pink")) {
+          return { valid: false, msg: "Change choose_title_color to pink." };
         }
         return { valid: true, msg: this.successMsg, learn: this.learn };
       }
@@ -2412,7 +2570,7 @@ const cssLevel = {
 
     const previewDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
 
-    // Always wrap in a dark scene for readability
+    // Scène magique douce et lisible
     const previewHtml = `
       <!DOCTYPE html>
       <html lang="en">
@@ -2423,12 +2581,84 @@ const cssLevel = {
           :root { color-scheme: dark; }
           html, body { margin: 0; min-height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
           body { background: #1A1235 !important; color: #F8F6FF !important; min-height: 100vh; padding: 18px; }
-          .grove-scene { min-height: calc(100vh - 36px); display: grid; place-items: center; padding: 22px; border-radius: 24px; overflow: hidden; position: relative; background: none; border: none; }
+          .grove-scene {
+            min-height: calc(100vh - 36px);
+            display: grid;
+            place-items: center;
+            padding: 22px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            background:
+              radial-gradient(circle at 60% 20%, rgba(200,182,255,0.13), transparent 60%),
+              radial-gradient(circle at 20% 80%, rgba(245,183,210,0.10), transparent 60%),
+              linear-gradient(180deg, rgba(255,255,255,0.06), rgba(4,8,11,0.18));
+            border: 1px solid rgba(249, 168, 212, 0.18);
+          }
+          .petal {
+            position: absolute;
+            border-radius: 999px;
+            opacity: 0.7;
+            filter: blur(0.5px);
+            pointer-events: none;
+          }
+          .petal1 { width: 80px; height: 32px; background: #f5b7d2; top: 18%; left: 18%; transform: rotate(-18deg); }
+          .petal2 { width: 60px; height: 22px; background: #a78bfa; top: 12%; right: 22%; transform: rotate(12deg); }
+          .petal3 { width: 90px; height: 28px; background: #c8b6ff; bottom: 18%; left: 14%; transform: rotate(8deg); }
+          .petal4 { width: 70px; height: 24px; background: #f9a8d4; bottom: 14%; right: 18%; transform: rotate(-10deg); }
+          .magic-card {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 420px);
+            margin: 0;
+            padding: 20px;
+            border: none;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 14px rgba(134, 239, 172, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            text-align: left;
+            transform: translateY(0) scale(1);
+            transition: all 0.3s ease;
+          }
+          h1 {
+            margin: 0 0 10px;
+            color: #f9a8d4;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+          }
+          p {
+            margin: 0 0 18px;
+            line-height: 1.6;
+            color: #d8d1ef;
+            transition: all 0.3s ease;
+          }
+          button {
+            border: none;
+            border-radius: 14px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, #93c5fd, #8b5cf6);
+            color: #100b24;
+            font-weight: 700;
+            cursor: pointer;
+            transform: translateY(0) scale(1);
+            box-shadow: 0 10px 22px rgba(9, 4, 20, 0.18);
+            transition: all 0.3s ease;
+          }
+          button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(147, 197, 253, 0.2);
+          }
         </style>
         <style id="grove-user-styles">${cssCode}</style>
       </head>
       <body>
         <div class="grove-scene">
+          <div class="petal petal1"></div>
+          <div class="petal petal2"></div>
+          <div class="petal petal3"></div>
+          <div class="petal petal4"></div>
           <div class="magic-card">
             <h1>The Color Grove</h1>
             <p>The grove is waiting for color and light.</p>
