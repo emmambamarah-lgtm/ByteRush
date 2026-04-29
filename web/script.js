@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const startButton = document.querySelector(".btn-start");
+  const startButton = document.getElementById("start-btn");
   const startScreen = document.getElementById("start-screen");
-  const dashboard = document.getElementById("dashboard");
+  const homeScreen = document.getElementById("home-screen");
 
-  if (startButton && startScreen && dashboard) {
-    startButton.addEventListener("click", function () {
-      startScreen.style.display = "none";
-      dashboard.style.display = "block";
-    });
-  }
+  startButton.addEventListener("click", function () {
+    startScreen.style.display = "none";
+    homeScreen.style.display = "block";
+  });
 });

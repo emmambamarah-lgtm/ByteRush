@@ -1,162 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ByteRush — Retro Coding Quest</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ByteRush — Retro Coding Quest</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- START SCREEN -->
   <div id="start-screen">
-  <!-- ALL your current code stays here -->
-</div>
-    <!-- Ambient glow -->
+
     <div class="glow-bg"></div>
-    <!-- Floating particles -->
     <div class="particles" id="particles"></div>
-    <!-- Main panel -->
+
     <div class="panel-wrapper">
-        <div class="panel">
-            <!-- Corner pixel decorations -->
-            <div class="pixel-blocks pixel-blocks--tl">
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--muted"></div>
-                <div class="pixel pixel--dim"></div>
-                <div class="pixel pixel--yellow"></div>
-            </div>
-            <div class="pixel-blocks pixel-blocks--tr">
-                <div class="pixel pixel--accent"></div>
-                <div class="pixel pixel--blue"></div>
-                <div class="pixel pixel--blue"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--yellow"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--dim"></div>
-            </div>
-            <div class="pixel-blocks pixel-blocks--bl">
-                <div class="pixel pixel--blue"></div>
-                <div class="pixel pixel--yellow"></div>
-                <div class="pixel pixel--yellow"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--blue"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--dim"></div>
-            </div>
-            <div class="pixel-blocks pixel-blocks--br">
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--dim"></div>
-                <div class="pixel pixel--yellow"></div>
-                <div class="pixel pixel--blue"></div>
-                <div class="pixel pixel--accent"></div>
-                <div class="pixel pixel--accent"></div>
-                <div class="pixel pixel--yellow"></div>
-            </div>
-            <div class="pixel-blocks pixel-blocks--left">
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--dim"></div>
-                <div class="pixel pixel--accent"></div>
-                <div class="pixel pixel--green"></div>
-                <div class="pixel pixel--blue"></div>
-            </div>
-            <!-- Content -->
-            <div class="content">
-                <!-- Status bar -->
-                <div class="status-bar">
-                    <span class="status-bar__left">
-                        <span class="status-dot"></span>
-                        SYS ONLINE
-                    </span>
-                    <span class="status-bar__right">V1.0.0</span>
-                </div>
-                <div class="label-top">START YOUR</div>
-                <h1 class="title">BYTERUSH</h1>
-                <div class="subtitle">RETRO CODING QUEST</div>
-                <p class="description">
-                    Build. Style. Script.<br>
-                    Complete coding missions and power up your skills.<span class="cursor-blink"></span>
-                </p>
-                <div class="divider"></div>
-                <button class="btn-start" type="button">PRESS START</button>
-                <div class="divider"></div>
-                <div class="modes">
-                    <div class="mode-tag">
-                        <span class="tag-icon"></span>HTML ARENA
-                    </div>
-                    <div class="mode-tag">
-                        <span class="tag-icon"></span>CSS CIRCUIT
-                    </div>
-                    <div class="mode-tag">
-                        <span class="tag-icon"></span>JS CORE
-                    </div>
-                </div>
-            </div>
+      <div class="panel">
+
+        <div class="pixel-blocks pixel-blocks--tl">
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--muted"></div>
+          <div class="pixel pixel--dim"></div>
+          <div class="pixel pixel--yellow"></div>
         </div>
-    </div>
-    <!-- Credits -->
-    <div class="credits">
-        <p>© 2026 BYTERUSH — ALL SYSTEMS NOMINAL</p>
-    </div>
-    <!-- ByteRush Dashboard (nouvelle structure propre) -->
-    <div id="dashboard" style="display: none;">
 
-      <div class="dashboard-container">
+        <div class="pixel-blocks pixel-blocks--tr">
+          <div class="pixel pixel--accent"></div>
+          <div class="pixel pixel--blue"></div>
+          <div class="pixel pixel--blue"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--yellow"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--dim"></div>
+        </div>
 
-        <aside class="sidebar">
-          <h2>MENU</h2>
-          <ul>
-            <li>Home</li>
-            <li>HTML Arena</li>
-            <li>CSS Circuit</li>
-            <li>JS Core</li>
-            <li>Projects</li>
-            <li>Challenges</li>
-            <li>Account</li>
-            <li>Settings</li>
-          </ul>
-        </aside>
+        <div class="pixel-blocks pixel-blocks--bl">
+          <div class="pixel pixel--blue"></div>
+          <div class="pixel pixel--yellow"></div>
+          <div class="pixel pixel--yellow"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--blue"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--dim"></div>
+        </div>
 
-        <main class="main-content">
-          <h1 class="dashboard-title">MISSION SELECT</h1>
-          <p class="dashboard-subtitle">Choose your coding path.</p>
+        <div class="pixel-blocks pixel-blocks--br">
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--dim"></div>
+          <div class="pixel pixel--yellow"></div>
+          <div class="pixel pixel--blue"></div>
+          <div class="pixel pixel--accent"></div>
+          <div class="pixel pixel--accent"></div>
+          <div class="pixel pixel--yellow"></div>
+        </div>
 
-          <div class="card-grid">
+        <div class="pixel-blocks pixel-blocks--left">
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--dim"></div>
+          <div class="pixel pixel--accent"></div>
+          <div class="pixel pixel--green"></div>
+          <div class="pixel pixel--blue"></div>
+        </div>
 
-            <div class="mission-card">
-              <h3>HTML Arena</h3>
-              <p>Learn structure, tags, headings, links, and images.</p>
-              <button>Enter Arena</button>
-            </div>
-
-            <div class="mission-card">
-              <h3>CSS Circuit</h3>
-              <p>Learn colors, spacing, layouts, borders, and animations.</p>
-              <button>Enter Circuit</button>
-            </div>
-
-            <div class="mission-card">
-              <h3>JS Core</h3>
-              <p>Learn clicks, variables, functions, and logic.</p>
-              <button>Enter Core</button>
-            </div>
-
+        <div class="content">
+          <div class="status-bar">
+            <span class="status-bar__left">
+              <span class="status-dot"></span>
+              SYS ONLINE
+            </span>
+            <span class="status-bar__right">V1.0.0</span>
           </div>
-        </main>
 
-        <aside class="stats-panel">
-          <h3>PLAYER STATS</h3>
-          <p>Player: Rookie Coder</p>
-          <p>Level: 1</p>
-          <p>XP: 0</p>
-          <p>Streak: 0 days</p>
-          <p>Missions: 0</p>
-        </aside>
+          <div class="label-top">START YOUR</div>
+          <h1 class="title">BYTERUSH</h1>
+          <div class="subtitle">RETRO CODING QUEST</div>
+
+          <p class="description">
+            Build. Style. Script.<br />
+            Complete coding missions and power up your skills.<span class="cursor-blink"></span>
+          </p>
+
+          <div class="divider"></div>
+
+          <button id="start-btn" class="btn-start" type="button">PRESS START</button>
+
+          <div class="divider"></div>
+
+          <div class="modes">
+            <div class="mode-tag">
+              <span class="tag-icon"></span>HTML ARENA
+            </div>
+            <div class="mode-tag">
+              <span class="tag-icon"></span>CSS CIRCUIT
+            </div>
+            <div class="mode-tag">
+              <span class="tag-icon"></span>JS CORE
+            </div>
+          </div>
+        </div>
 
       </div>
+    </div>
+
+    <div class="credits">
+      <p>©️ 2026 BYTERUSH — ALL SYSTEMS NOMINAL</p>
+    </div>
+
+  </div>
+
+  <!-- HOME SCREEN / DASHBOARD -->
+  <div id="home-screen" style="display: none;">
+    <div class="grid-bg"></div>
+
+    <div class="dashboard-layout">
+
+      <aside class="sidebar">
+        <div class="logo">ByteRush</div>
+
+        <nav>
+          <a href="#" class="nav-item active">Home</a>
+          <a href="#" class="nav-item">HTML Arena</a>
+          <a href="#" class="nav-item">CSS Circuit</a>
+          <a href="#" class="nav-item">JS Core</a>
+          <a href="#" class="nav-item">Projects</a>
+          <a href="#" class="nav-item">Challenges</a>
+          <a href="#" class="nav-item">Account</a>
+          <a href="#" class="nav-item">Settings</a>
+        </nav>
+      </aside>
+
+      <main class="main-area">
+        <div class="section-header">
+          <h2>MISSION CONTROL</h2>
+          <p>Choose your coding path and start leveling up.<span class="cursor"></span></p>
+        </div>
+
+        <div class="hero-panel">
+          <h3>WELCOME, ROOKIE CODER</h3>
+          <p>Your coding quest begins here.</p>
+        </div>
+
+        <div class="cards-grid">
+          <div class="mission-card">
+            <span class="card-icon">&lt;/&gt;</span>
+            <strong>HTML Arena</strong><br />
+            Build the structure
+          </div>
+
+          <div class="mission-card">
+            <span class="card-icon">✦</span>
+            <strong>CSS Circuit</strong><br />
+            Style the interface
+          </div>
+
+          <div class="mission-card">
+            <span class="card-icon">⚡</span>
+            <strong>JS Core</strong><br />
+            Add interaction
+          </div>
+
+          <div class="mission-card">
+            <span class="card-icon">🕹️</span>
+            <strong>Projects</strong><br />
+            Build mini games
+          </div>
+
+          <div class="mission-card">
+            <span class="card-icon">🛡️</span>
+            <strong>Challenges</strong><br />
+            Test your skills
+          </div>
+        </div>
+      </main>
+
+      <aside class="stats-panel">
+        <div class="stat-box">
+          <h4>Player</h4>
+          <p>Rookie Coder</p>
+        </div>
+
+        <div class="stat-box">
+          <h4>Level</h4>
+          <p>1</p>
+        </div>
+
+        <div class="stat-box">
+          <h4>XP</h4>
+          <p>0</p>
+        </div>
+
+        <div class="stat-box">
+          <h4>Streak</h4>
+          <p>0 days</p>
+        </div>
+
+        <div class="stat-box">
+          <h4>Missions</h4>
+          <p>0</p>
+        </div>
+
+        <div class="stat-box">
+          <h4>Badges</h4>
+          <p>0</p>
+        </div>
+      </aside>
 
     </div>
-<script src="script.js"></script>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
