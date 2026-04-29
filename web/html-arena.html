@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML Arena</title>
+</head>
+<body style="background:black; color:#39ff5a; font-family:monospace; text-align:center; padding-top:80px;">
+
+  <h1>HTML ARENA</h1>
+
+  <h2 id="mission-title">Mission 1: Create a Heading</h2>
+
+  <p id="mission-task"></p>
+
+  <textarea id="code" rows="6" cols="50"></textarea>
+
+  <br><br>
+
+  <button onclick="checkCode()">Run</button>
+
+  <button onclick="resetArena()">Reset HTML Arena</button>
+
+  <p id="result"></p>
+
+  <button onclick="window.location.href='index.html'">
+    ← BACK TO DASHBOARD
+  </button>
+
+  <script>
+    let level = parseInt(localStorage.getItem("html-level")) || 1;
+
+    function loadMission() {
+      const title = document.getElementById("mission-title");
+      const task = document.getElementById("mission-task");
+      const code = document.getElementById("code");
+      const result = document.getElementById("result");
+
+      result.innerText = "";
+
+      if (level === 1) {
+        title.innerText = "Mission 1: Create a Heading";
+        task.innerText = "Use <h1> tags to create: Hello World. Example: <h1></h1>";
+        code.value = "<h1></h1>";
+      } else if (level === 2) {
+        title.innerText = "Mission 2: Create a Paragraph";
+        task.innerText = "Use <p> tags to create: I love coding. Example: <p></p>";
+        code.value = "<p></p>";
+      } else {
+        title.innerText = "HTML Arena Complete!";
+        task.innerText = "You completed the first two HTML missions. Click Reset HTML Arena if you want to practice again.";
+        code.value = "";
+      }
+    }
+
+    function checkCode() {
+      const code = document.getElementById("code").value.trim();
+      const result = document.getElementById("result");
+
+      if (level === 1 && code === "<h1>Hello World</h1>") {
+        result.innerText = "✅ Correct! You earned 10 XP.";
+        addXP(10);
+        level = 2;
+        localStorage.setItem("html-level", level);
+        setTimeout(loadMission, 1000);
+
+      } else if (level === 2 && code === "<p>I love coding</p>") {
+        result.innerText = "✅ Correct! You earned 10 XP.";
+        addXP(10);
+        level = 3;
+        localStorage.setItem("html-level", level);
+        setTimeout(loadMission, 1000);
+
+      } else if (level >= 3) {
+        result.innerText = "🏆 Completed. Reset the arena to practice again.";
+      } else {
+        result.innerText = "❌ Try again. Make sure your tags and text are correct.";
+      }
+    }
+
+    function addXP(points) {
+      let xp = parseInt(localStorage.getItem("xp")) || 0;
+      xp += points;
+      localStorage.setItem("xp", xp);
+    }
+
+    function resetArena() {
+      localStorage.setItem("html-level", 1);
+      level = 1;
+      loadMission();
+      document.getElementById("result").innerText = "🔄 HTML Arena reset. Start again from Mission 1.";
+    }
+
+    loadMission();
+  </script>
+
+</body>
+</html>

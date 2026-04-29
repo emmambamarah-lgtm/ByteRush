@@ -144,11 +144,11 @@
         </div>
 
         <div class="cards-grid">
-          <div class="mission-card">
-            <span class="card-icon">&lt;/&gt;</span>
-            <strong>HTML Arena</strong><br />
-            Build the structure
-          </div>
+          <div class="mission-card" id="html-arena-card">
+          <span class="card-icon">&lt;/&gt;</span>
+          <strong>HTML Arena</strong><br />
+          Build the structure
+         </div>
 
           <div class="mission-card">
             <span class="card-icon">✦</span>
@@ -189,7 +189,7 @@
 
         <div class="stat-box">
           <h4>XP</h4>
-          <p>0</p>
+          <p id="xp-value">0</p>
         </div>
 
         <div class="stat-box">
@@ -206,8 +206,12 @@
           <h4>Badges</h4>
           <p>0</p>
         </div>
-      </aside>
+        <p id="result"></p>
 
+        <button onclick="window.location.href='index.html'">
+        ← BACK TO DASHBOARD
+        </button>
+      </aside>
     </div>
   </div>
 
