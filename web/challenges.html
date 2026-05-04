@@ -20,18 +20,20 @@ h1 {
 .challenge-box {
   border: 2px solid #38bdf8;
   padding: 20px;
-  max-width: 600px;
+  max-width: 650px;
   margin: 20px auto;
+  box-shadow: 0 0 18px rgba(56,189,248,0.35);
 }
 
 textarea {
   width: 100%;
-  height: 120px;
+  height: 130px;
   background: #020617;
   color: #38bdf8;
   border: 2px solid #38bdf8;
   padding: 10px;
   font-family: monospace;
+  box-sizing: border-box;
 }
 
 button {
@@ -43,6 +45,11 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background: #38bdf8;
+  color: black;
+}
+
 .timer {
   font-size: 20px;
   margin: 10px;
@@ -52,113 +59,224 @@ button {
   color: #facc15;
 }
 
+.meta {
+  color: #bae6fd;
+  font-weight: bold;
+}
+
+#result {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.error-shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+.win-glow {
+  animation: glow 0.8s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 8px #38bdf8; }
+  to { text-shadow: 0 0 25px #38bdf8; }
+}
 </style>
 </head>
 
 <body>
 
 <h1>⚡ CHALLENGE MODE</h1>
-<p>5 Missions. 5 Seconds Each. No Mercy.</p>
+<p>Random Missions. Adaptive Timer. Big XP.</p>
 
-<div class="timer">⏱ <span id="time">5</span>s</div>
+<div class="meta">
+  ROUND: <span id="round">1</span> / 5 |
+  XP REWARD: <span id="reward">100</span> |
+  DIFFICULTY: <span id="difficulty">Normal</span>
+</div>
+
+<div class="timer">⏱ <span id="time">20</span>s</div>
 <div class="streak">🔥 Streak: <span id="streak">0</span></div>
 
-<div class="challenge-box">
+<div class="challenge-box" id="challenge-box">
   <p id="instruction"></p>
   <textarea id="code"></textarea><br>
   <button onclick="submitAnswer()">SUBMIT</button>
+  <button onclick="window.location.href='index.html'">EXIT</button>
 </div>
 
 <p id="result"></p>
 
 <script>
-
-let challenges = [
-  { q: "Type: h1 { color: blue; }", a: "h1{color:blue;}" },
-  { q: "Type: body { background-color: black; }", a: "body{background-color:black;}" },
-  { q: "Type: h1 { font-size: 40px; }", a: "h1{font-size:40px;}" },
-  { q: "Type: .card { padding: 20px; }", a: ".card{padding:20px;}" },
-  { q: "Type: .card { text-align: center; }", a: ".card{text-align:center;}" }
+const allChallenges = [
+  { q: 'Type: h1 { color: blue; }', a: 'h1{color:blue;}', difficulty: "easy" },
+  { q: 'Type: p { color: red; }', a: 'p{color:red;}', difficulty: "easy" },
+  { q: 'Type: body { background-color: black; }', a: 'body{background-color:black;}', difficulty: "easy" },
+  { q: 'Type: h1 { font-size: 40px; }', a: 'h1{font-size:40px;}', difficulty: "medium" },
+  { q: 'Type: .card { padding: 20px; }', a: '.card{padding:20px;}', difficulty: "medium" },
+  { q: 'Type: .card { text-align: center; }', a: '.card{text-align:center;}', difficulty: "medium" },
+  { q: 'Type: .card { border: 2px solid blue; }', a: '.card{border:2pxsolidblue;}', difficulty: "hard" },
+  { q: 'Type: button { background-color: yellow; }', a: 'button{background-color:yellow;}', difficulty: "hard" },
+  { q: 'Type: h2 { margin: 10px; }', a: 'h2{margin:10px;}', difficulty: "hard" }
 ];
 
+let challengeSet = [];
 let current = 0;
-let time = 5;
+let time = 20;
 let timer;
-let streak = 0;
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+let reward = 100;
+
+let challengeWins = parseInt(localStorage.getItem("challenge-wins")) || 0;
+let challengeLosses = parseInt(localStorage.getItem("challenge-losses")) || 0;
 
 function normalize(text) {
   return text.replace(/\s+/g, "").toLowerCase();
 }
 
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function getDifficultyMode() {
+  if (challengeWins >= challengeLosses + 3) return "Hard";
+  if (challengeLosses >= challengeWins + 2) return "Easy";
+  return "Normal";
+}
+
+function buildChallengeSet() {
+  const mode = getDifficultyMode();
+  let pool = [];
+
+  if (mode === "Easy") {
+    pool = allChallenges.filter(c => c.difficulty === "easy" || c.difficulty === "medium");
+  } else if (mode === "Hard") {
+    pool = allChallenges.filter(c => c.difficulty === "medium" || c.difficulty === "hard");
+  } else {
+    pool = allChallenges;
+  }
+
+  challengeSet = shuffle([...pool]).slice(0, 5);
+  document.getElementById("difficulty").innerText = mode;
+}
+
+function getTimeForRound() {
+  const mode = getDifficultyMode();
+
+  let baseTime = 20;
+
+  if (mode === "Easy") baseTime = 25;
+  if (mode === "Normal") baseTime = 20;
+  if (mode === "Hard") baseTime = 17;
+
+  if (current < 2) return baseTime;
+  if (current < 4) return Math.max(baseTime - 2, 15);
+  return Math.max(baseTime - 5, 15);
+}
+
 function loadChallenge() {
-  if (current >= challenges.length) {
+  if (current >= challengeSet.length) {
     winGame();
     return;
   }
 
-  document.getElementById("instruction").innerText = challenges[current].q;
+  time = getTimeForRound();
+
+  document.getElementById("round").innerText = current + 1;
+  document.getElementById("time").innerText = time;
+  document.getElementById("streak").innerText = streak;
+  document.getElementById("reward").innerText = reward;
+  document.getElementById("instruction").innerText = challengeSet[current].q;
   document.getElementById("code").value = "";
   document.getElementById("result").innerText = "";
-
-  time = 5;
-  document.getElementById("time").innerText = time;
+  document.getElementById("difficulty").innerText = getDifficultyMode();
 
   clearInterval(timer);
-  timer = setInterval(() => {
+
+  timer = setInterval(function () {
     time--;
     document.getElementById("time").innerText = time;
 
     if (time <= 0) {
-      failGame();
+      failGame("⏱ Time ran out!");
     }
   }, 1000);
 }
 
 function submitAnswer() {
   const user = normalize(document.getElementById("code").value);
-  const correct = challenges[current].a;
+  const correct = challengeSet[current].a;
 
   if (user === correct) {
     clearInterval(timer);
 
     streak++;
-    document.getElementById("streak").innerText = streak;
+    localStorage.setItem("streak", streak);
+
+    reward += 10;
 
     current++;
     loadChallenge();
   } else {
-    failGame();
+    failGame("❌ Wrong answer!");
   }
 }
 
-function failGame() {
+function failGame(message) {
   clearInterval(timer);
 
+  challengeLosses++;
+  localStorage.setItem("challenge-losses", challengeLosses);
+
   streak = 0;
+  localStorage.setItem("streak", streak);
+
   document.getElementById("streak").innerText = 0;
+  document.getElementById("result").innerText = message + " Restarting run with adjusted difficulty...";
 
-  document.getElementById("result").innerText = "❌ Failed. Restarting...";
+  const box = document.getElementById("challenge-box");
+  box.classList.add("error-shake");
 
-  setTimeout(() => {
+  setTimeout(function () {
+    box.classList.remove("error-shake");
+  }, 300);
+
+  setTimeout(function () {
     current = 0;
+    reward = 100;
+    buildChallengeSet();
     loadChallenge();
   }, 1500);
 }
 
 function winGame() {
+  clearInterval(timer);
+
+  challengeWins++;
+  localStorage.setItem("challenge-wins", challengeWins);
+
   let xp = parseInt(localStorage.getItem("xp")) || 0;
-  xp += 100;
+  xp += reward;
   localStorage.setItem("xp", xp);
 
-  document.getElementById("result").innerText = "🏆 YOU WON! +100 XP";
+  document.querySelector("h1").classList.add("win-glow");
+  document.getElementById("result").innerText = "🏆 CHALLENGE CLEARED! +" + reward + " XP";
 
-  setTimeout(() => {
+  setTimeout(function () {
     window.location.href = "index.html";
   }, 3000);
 }
 
+buildChallengeSet();
 loadChallenge();
-
 </script>
 
 </body>
