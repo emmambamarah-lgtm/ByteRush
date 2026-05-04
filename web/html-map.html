@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HTML Arena</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+  background: #03080f;
+  color: #39ff5a;
+  font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  padding: 40px;
+  margin: 0;
+}
+
+h1 {
+  font-size: 22px;
+  text-shadow: 0 0 10px #39ff5a;
+}
+
+p {
+  font-size: 10px;
+  color: #9affaa;
+}
+
+/* STATS */
+#player-stats {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #9affaa;
+  opacity: 0.8;
+}
+
+.reset-area {
+  margin-top: 14px;
+}
+
+.reset-btn {
+  background: transparent;
+  color: #ff4d4d;
+  border: 2px solid #ff4d4d;
+  padding: 8px 16px;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.reset-btn:hover {
+  background: #ff4d4d;
+  color: black;
+}
+
+.reset-warning {
+  font-size: 8px;
+  opacity: 0.4;
+  margin-top: 6px;
+}
+
+.map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.node {
+  border: 2px solid #39ff5a;
+  padding: 15px;
+  width: 280px;
+  background: #050b12;
+  font-size: 10px;
+}
+
+.node.completed {
+  box-shadow: 0 0 10px #39ff5a;
+}
+
+.node.active {
+  background: #39ff5a;
+  color: black;
+  cursor: pointer;
+}
+
+.node.locked {
+  opacity: 0.3;
+}
+
+.line {
+  width: 2px;
+  height: 20px;
+  background: rgba(57,255,90,0.4);
+}
+
+.back-btn {
+  margin-top: 40px;
+  border: 2px solid #39ff5a;
+  background: transparent;
+  color: #39ff5a;
+  padding: 10px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>HTML ARENA</h1>
+<p>BUILD THE STRUCTURE</p>
+
+<!-- STATS -->
+<div id="player-stats">
+  XP: <span id="xp">0</span> | MISSION: <span id="mission">1</span>
+</div>
+
+<div class="reset-area">
+  <button onclick="resetProgress()" class="reset-btn">RESET PROGRESS</button>
+  <p class="reset-warning">this erases all progress</p>
+</div>
+
+<div class="map" id="map"></div>
+
+<button class="back-btn" onclick="goBack()">← BACK</button>
+
+<script>
+const missions = [
+  "Mission 1: Headings",
+  "Mission 2: Paragraphs",
+  "Mission 3: Buttons",
+  "Mission 4: Links",
+  "Mission 5: Images",
+  "Mission 6: Lists",
+  "BOSS MODE"
+];
+
+let level = parseInt(localStorage.getItem("html-level")) || 1;
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+
+function loadStats() {
+  document.getElementById("xp").innerText = xp;
+  document.getElementById("mission").innerText = level;
+}
+
+const map = document.getElementById("map");
+
+function buildMap() {
+  map.innerHTML = "";
+
+  missions.forEach((name, index) => {
+    const node = document.createElement("div");
+    node.classList.add("node");
+
+    const num = index + 1;
+
+    if (num < level) {
+      node.classList.add("completed");
+      node.innerText = "✅ " + name;
+    } else if (num === level) {
+      node.classList.add("active");
+      node.innerText = "▶ " + name;
+      node.onclick = () => window.location.href = "html-arena.html";
+    } else {
+      node.classList.add("locked");
+      node.innerText = "🔒 " + name;
+    }
+
+    map.appendChild(node);
+
+    if (index < missions.length - 1) {
+      const line = document.createElement("div");
+      line.classList.add("line");
+      map.appendChild(line);
+    }
+  });
+}
+
+function resetProgress() {
+  if (confirm("Reset ALL progress?")) {
+    localStorage.clear();
+    level = 1;
+    xp = 0;
+    loadStats();
+    buildMap();
+  }
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+
+loadStats();
+buildMap();
+</script>
+
+</body>
+</html>

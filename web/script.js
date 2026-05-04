@@ -87,4 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
       particlesContainer.appendChild(dot);
     }
   }
+  function loadStats() {
+  const cp = localStorage.getItem("cp") || 0;
+  const level = localStorage.getItem("html-level") || 1;
+
+  document.getElementById("cp").innerText = cp;
+  document.getElementById("lvl").innerText = level;
+}
+loadStats();
 });
