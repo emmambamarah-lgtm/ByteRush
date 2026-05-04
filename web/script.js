@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const cssLock = document.getElementById("css-lock");
   const jsLock = document.getElementById("js-lock");
 
-  // PRESS START → show dashboard
   if (startButton) {
     startButton.addEventListener("click", function () {
       startScreen.style.display = "none";
@@ -19,52 +18,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // HTML Arena → open HTML mission map
   if (htmlCard) {
     htmlCard.addEventListener("click", function () {
-      window.location.href = "html-map.html";
+      window.location.href = "html-arena.html";
     });
   }
 
-  // CSS unlocks only after HTML Boss Mode is complete
   if (cssCard) {
     cssCard.addEventListener("click", function () {
       const htmlLevel = parseInt(localStorage.getItem("html-level")) || 1;
 
-      if (htmlLevel >= 8) {
+      if (htmlLevel >= 3) {
         alert("CSS Circuit unlocked! We will build this next.");
       } else {
-        alert("Finish all HTML missions and Boss Mode first!");
+        alert("Finish HTML Arena first!");
       }
     });
   }
 
-  // JS stays locked until CSS is complete later
   if (jsCard) {
     jsCard.addEventListener("click", function () {
       alert("JS Core is locked. Complete HTML and CSS first!");
     });
   }
 
-  // Show XP on dashboard
   const xp = parseInt(localStorage.getItem("xp")) || 0;
 
   if (xpDisplay) {
     xpDisplay.innerText = xp;
   }
 
-  // Update lock labels
   const htmlLevel = parseInt(localStorage.getItem("html-level")) || 1;
 
   if (cssLock) {
-    cssLock.innerText = htmlLevel >= 8 ? "✅ Unlocked" : "🔒 Locked";
+    cssLock.innerText = htmlLevel >= 3 ? "✅ Unlocked" : "🔒 Locked";
   }
 
   if (jsLock) {
     jsLock.innerText = "🔒 Locked";
   }
 
-  // Sidebar active state
   const navItems = document.querySelectorAll(".nav-item");
 
   navItems.forEach(function (item) {
@@ -79,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Floating particles
   const particlesContainer = document.getElementById("particles");
 
   if (particlesContainer) {
@@ -95,4 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
       particlesContainer.appendChild(dot);
     }
   }
+  function loadStats() {
+  const cp = localStorage.getItem("cp") || 0;
+  const level = localStorage.getItem("html-level") || 1;
+
+  document.getElementById("cp").innerText = cp;
+  document.getElementById("lvl").innerText = level;
+}
+loadStats();
 });

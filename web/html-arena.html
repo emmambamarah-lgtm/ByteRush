@@ -174,9 +174,9 @@
   <p id="hint"></p>
   <p id="warning"></p>
 
-  <audio id="success-sound" src="sounds/success.mp3"></audio>
-  <audio id="error-sound" src="sounds/error.mp3"></audio>
-  <audio id="unlock-sound" src="sounds/unlock.mp3"></audio>
+  <audio id="success-sound" src="./sounds/success.mp3" preload="auto"></audio>
+  <audio id="error-sound" src="./sounds/error.mp3" preload="auto"></audio>
+  <audio id="unlock-sound" src="./sounds/unlock.mp3" preload="auto"></audio>
 
   <script>
     let level = parseInt(localStorage.getItem("html-level")) || 1;
@@ -445,14 +445,19 @@
       const hint = document.getElementById("hint");
       const warning = document.getElementById("warning");
 
+      const isBossComplete = nextLevel > 7;
+      const redirectDelay = isBossComplete ? 5800 : 1200;
+
       result.innerText = "✅ " + message + " +" + xpGain + " XP";
       hint.innerText = "";
       warning.innerText = "";
 
       playSuccess();
 
-      if (nextLevel > 7) {
-        playUnlock();
+      if (isBossComplete) {
+        setTimeout(function () {
+          playUnlock();
+        }, 300);
       }
 
       document.body.classList.add("success-flash");
@@ -469,7 +474,7 @@
 
       setTimeout(function () {
         window.location.href = "html-map.html";
-      }, 1200);
+      }, redirectDelay);
     }
 
     function addXP(points) {
@@ -493,12 +498,13 @@
     function playSound(id) {
       const sound = document.getElementById(id);
 
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play().catch(function () {
-          console.log("Sound blocked or missing:", id);
-        });
-      }
+      if (!sound) return;
+
+      sound.currentTime = 0;
+
+      sound.play().catch(function () {
+        console.log("Sound blocked or missing:", id);
+      });
     }
 
     function playSuccess() {
