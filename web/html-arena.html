@@ -25,7 +25,7 @@
     }
 
     .bytebot {
-      max-width: 900px;
+      max-width: 850px;
       margin: 20px auto;
       border: 2px solid #39ff5a;
       background: #050b12;
@@ -34,23 +34,19 @@
       box-shadow: 0 0 15px rgba(57, 255, 90, 0.25);
     }
 
-    .bytebot strong {
-      color: #9affaa;
-    }
-
     .arena-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      width: 90%;
-      max-width: 1000px;
+      gap: 26px;
+      width: 84%;
+      max-width: 900px;
       margin: 30px auto;
     }
 
     textarea,
     iframe {
       width: 100%;
-      height: 260px;
+      height: 230px;
       border: 2px solid #39ff5a;
       box-sizing: border-box;
     }
@@ -84,6 +80,11 @@
       color: black;
     }
 
+    button:active {
+      transform: scale(0.92);
+      box-shadow: 0 0 15px #39ff5a;
+    }
+
     #result,
     #hint,
     #warning {
@@ -100,9 +101,43 @@
       font-size: 13px;
     }
 
+    .success-flash {
+      animation: flash 0.4s ease-in-out;
+    }
+
+    @keyframes flash {
+      0% { background-color: #03080f; }
+      50% { background-color: rgba(57, 255, 90, 0.2); }
+      100% { background-color: #03080f; }
+    }
+
+    .xp-pop {
+      position: fixed;
+      left: 50%;
+      top: 60%;
+      color: #39ff5a;
+      font-size: 20px;
+      font-weight: bold;
+      pointer-events: none;
+      animation: xpFloat 1s ease-out forwards;
+      z-index: 9999;
+    }
+
+    @keyframes xpFloat {
+      0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px) scale(1.3);
+      }
+    }
+
     @media (max-width: 800px) {
       .arena-layout {
         grid-template-columns: 1fr;
+        width: 92%;
       }
     }
   </style>
@@ -112,7 +147,6 @@
 
   <h1>HTML ARENA</h1>
   <h2 id="mission-title"></h2>
-  <p id="mission-task"></p>
 
   <div class="bytebot">
     <strong>🤖 ByteBot:</strong>
@@ -140,6 +174,10 @@
   <p id="hint"></p>
   <p id="warning"></p>
 
+  <audio id="success-sound" src="sounds/success.mp3"></audio>
+  <audio id="error-sound" src="sounds/error.mp3"></audio>
+  <audio id="unlock-sound" src="sounds/unlock.mp3"></audio>
+
   <script>
     let level = parseInt(localStorage.getItem("html-level")) || 1;
     let attempts = 0;
@@ -147,7 +185,6 @@
     const missions = {
       1: {
         title: "Mission 1: Headings",
-        task: 'Type the full h1 code to show <span class="highlight">"Hello World"</span>.',
         starter: "<h1></h1>",
         tag: "h1",
         success: "SYSTEM RESTORED: Main title activated.",
@@ -161,7 +198,6 @@
 
       2: {
         title: "Mission 2: Paragraphs",
-        task: 'Type the full p code to show <span class="highlight">"I love coding"</span>.',
         starter: "<p></p>",
         tag: "p",
         success: "MESSAGE SIGNAL RESTORED.",
@@ -175,7 +211,6 @@
 
       3: {
         title: "Mission 3: Buttons",
-        task: 'Type the full button code to show <span class="highlight">"Click Me"</span>.',
         starter: "<button></button>",
         tag: "button",
         success: "CONTROL BUTTON ONLINE.",
@@ -189,7 +224,6 @@
 
       4: {
         title: "Mission 4: Links",
-        task: 'Type the full link code to show <span class="highlight">"Visit Site"</span>.',
         starter: '<a href="#"></a>',
         tag: "a",
         success: "PORTAL LINK ACTIVATED.",
@@ -203,7 +237,6 @@
 
       5: {
         title: "Mission 5: Images",
-        task: 'Type the full image code using <span class="highlight">"image.png"</span>.',
         starter: '<img src="">',
         tag: "img",
         selfClosing: true,
@@ -218,7 +251,6 @@
 
       6: {
         title: "Mission 6: Lists",
-        task: 'Type the full list code with one item: <span class="highlight">"Code"</span>.',
         starter: "<ul>\n  <li></li>\n</ul>",
         tag: "ul",
         extraTags: ["li"],
@@ -233,7 +265,6 @@
 
       7: {
         title: "BOSS MODE: Profile Card",
-        task: 'Build a profile card using <span class="highlight">"h1, p, img, and button"</span>.',
         starter: "<h1>Your Name</h1>\n<p>Your bio here</p>\n<img src=\"profile.png\">\n<button>Follow Me</button>",
         boss: true,
         success: "BOSS CLEARED: CSS CIRCUIT UNLOCKED.",
@@ -254,7 +285,6 @@
     function loadMission() {
       const mission = missions[level];
       const title = document.getElementById("mission-title");
-      const task = document.getElementById("mission-task");
       const result = document.getElementById("result");
       const hint = document.getElementById("hint");
       const warning = document.getElementById("warning");
@@ -268,7 +298,6 @@
 
       if (!mission) {
         title.innerText = "HTML ARENA COMPLETE!";
-        task.innerText = "You completed all HTML missions.";
         bytebot.innerText = "CSS Circuit is ready. Head back to Mission Control.";
         codeBox.value = "";
         updatePreview();
@@ -276,7 +305,6 @@
       }
 
       title.innerText = mission.title;
-      task.innerHTML = mission.task;
       bytebot.innerHTML = mission.bytebot;
       codeBox.value = mission.starter;
 
@@ -298,9 +326,7 @@
 
       warning.innerText = "";
 
-      if (!mission || rawCode.trim().length === 0) {
-        return;
-      }
+      if (!mission || rawCode.trim().length === 0) return;
 
       const code = rawCode.trim();
       const normalized = normalize(code);
@@ -323,32 +349,7 @@
         return;
       }
 
-      if (mission.boss) {
-        const requiredTags = ["h1", "p", "img", "button"];
-
-        for (let i = 0; i < requiredTags.length; i++) {
-          const tag = requiredTags[i];
-
-          if (tag === "img") {
-            if (!normalized.includes("<img")) {
-              warning.innerText = "⚠️ Boss Mode needs an image tag. Add <img src=\"profile.png\">.";
-              return;
-            }
-          } else {
-            if (!normalized.includes("<" + tag + ">")) {
-              warning.innerText = "⚠️ Missing opening tag: <" + tag + ">";
-              return;
-            }
-
-            if (!normalized.includes("</" + tag + ">")) {
-              warning.innerText = "⚠️ Missing closing tag: </" + tag + ">";
-              return;
-            }
-          }
-        }
-
-        return;
-      }
+      if (mission.boss) return;
 
       if (mission.selfClosing) {
         if (!normalized.includes("<img")) {
@@ -422,6 +423,7 @@
         const reward = mission.boss ? 50 : 10;
         success(reward, level + 1, mission.success);
       } else {
+        playError();
         attempts++;
         showHint(mission);
         result.innerText = "❌ System not restored yet.";
@@ -447,13 +449,27 @@
       hint.innerText = "";
       warning.innerText = "";
 
+      playSuccess();
+
+      if (nextLevel > 7) {
+        playUnlock();
+      }
+
+      document.body.classList.add("success-flash");
+
+      setTimeout(function () {
+        document.body.classList.remove("success-flash");
+      }, 400);
+
+      showXPPop(xpGain);
+
       addXP(xpGain);
       level = nextLevel;
       localStorage.setItem("html-level", level);
 
       setTimeout(function () {
         window.location.href = "html-map.html";
-      }, 1400);
+      }, 1200);
     }
 
     function addXP(points) {
@@ -462,9 +478,43 @@
       localStorage.setItem("xp", xp);
     }
 
+    function showXPPop(amount) {
+      const xp = document.createElement("div");
+      xp.className = "xp-pop";
+      xp.innerText = "+" + amount + " XP";
+
+      document.body.appendChild(xp);
+
+      setTimeout(function () {
+        xp.remove();
+      }, 1000);
+    }
+
+    function playSound(id) {
+      const sound = document.getElementById(id);
+
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch(function () {
+          console.log("Sound blocked or missing:", id);
+        });
+      }
+    }
+
+    function playSuccess() {
+      playSound("success-sound");
+    }
+
+    function playError() {
+      playSound("error-sound");
+    }
+
+    function playUnlock() {
+      playSound("unlock-sound");
+    }
+
     function updatePreview() {
       const code = document.getElementById("code").value;
-
       document.getElementById("preview").srcdoc = code;
       checkSyntaxWarnings(code);
     }
