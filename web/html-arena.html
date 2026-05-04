@@ -18,6 +18,12 @@
       color: #39ff5a;
     }
 
+    .highlight {
+      color: #39ff5a;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(57, 255, 90, 0.7);
+    }
+
     .bytebot {
       max-width: 900px;
       margin: 20px auto;
@@ -41,48 +47,22 @@
       margin: 30px auto;
     }
 
-    .editor-box,
+    textarea,
     iframe {
       width: 100%;
-      height: 240px;
+      height: 260px;
       border: 2px solid #39ff5a;
       box-sizing: border-box;
     }
 
-    .editor-box {
+    textarea {
       background: #050b12;
       color: #39ff5a;
-      padding: 18px;
+      padding: 15px;
       font-family: monospace;
       font-size: 16px;
-      text-align: left;
-      overflow: auto;
-    }
-
-    .code-line {
-      margin-bottom: 12px;
-      white-space: pre-wrap;
-    }
-
-    .locked-code {
-      color: #9affaa;
-      opacity: 0.75;
-      user-select: none;
-    }
-
-    .code-input {
-      background: #03080f;
-      color: #39ff5a;
-      border: 1px solid #39ff5a;
-      padding: 6px;
-      font-family: monospace;
-      font-size: 15px;
+      resize: none;
       outline: none;
-      min-width: 120px;
-    }
-
-    .code-input:focus {
-      box-shadow: 0 0 8px rgba(57, 255, 90, 0.5);
     }
 
     iframe {
@@ -105,13 +85,19 @@
     }
 
     #result,
-    #hint {
+    #hint,
+    #warning {
       font-weight: bold;
       margin-top: 15px;
     }
 
     #hint {
       color: #9affaa;
+    }
+
+    #warning {
+      color: #ff4d4d;
+      font-size: 13px;
     }
 
     @media (max-width: 800px) {
@@ -137,8 +123,7 @@
 
     <div>
       <h3>Code Editor</h3>
-
-      <div class="editor-box" id="editor-box"></div>
+      <textarea id="code"></textarea>
 
       <button onclick="checkCode()">Run</button>
       <button onclick="window.location.href='html-map.html'">← BACK TO MAP</button>
@@ -153,6 +138,7 @@
 
   <p id="result"></p>
   <p id="hint"></p>
+  <p id="warning"></p>
 
   <script>
     let level = parseInt(localStorage.getItem("html-level")) || 1;
@@ -161,90 +147,107 @@
     const missions = {
       1: {
         title: "Mission 1: Headings",
-        task: "Restore the main arcade title by writing: Hello World.",
-        type: "single",
-        prefix: "<h1>",
-        suffix: "</h1>",
-        answer: "helloworld",
+        task: 'Type the full h1 code to show <span class="highlight">"Hello World"</span>.',
+        starter: "<h1></h1>",
+        tag: "h1",
         success: "SYSTEM RESTORED: Main title activated.",
-        bytebot: "The h1 tags are locked so you cannot delete them. Type Hello World between the tags.",
-        hint1: "The text should say Hello World.",
-        hint2: "Type exactly: Hello World"
+        bytebot: 'Use h1 tags and place <span class="highlight">"Hello World"</span> inside.',
+        hint1: "You need an opening h1 tag and a closing h1 tag.",
+        hint2: "Pattern: <h1>Hello World</h1>",
+        check: function (code) {
+          return code === "<h1>helloworld</h1>";
+        }
       },
 
       2: {
         title: "Mission 2: Paragraphs",
-        task: "Add a system message by writing: I love coding.",
-        type: "single",
-        prefix: "<p>",
-        suffix: "</p>",
-        answer: "ilovecoding",
+        task: 'Type the full p code to show <span class="highlight">"I love coding"</span>.',
+        starter: "<p></p>",
+        tag: "p",
         success: "MESSAGE SIGNAL RESTORED.",
-        bytebot: "The p tags are locked. Type I love coding between them.",
-        hint1: "Paragraph text goes inside the p tags.",
-        hint2: "Type exactly: I love coding"
+        bytebot: 'Use paragraph tags and place <span class="highlight">"I love coding"</span> inside.',
+        hint1: "You need <p> at the beginning and </p> at the end.",
+        hint2: "Pattern: <p>I love coding</p>",
+        check: function (code) {
+          return code === "<p>ilovecoding</p>";
+        }
       },
 
       3: {
         title: "Mission 3: Buttons",
-        task: "Create a control button that says: Click Me.",
-        type: "single",
-        prefix: "<button>",
-        suffix: "</button>",
-        answer: "clickme",
+        task: 'Type the full button code to show <span class="highlight">"Click Me"</span>.',
+        starter: "<button></button>",
+        tag: "button",
         success: "CONTROL BUTTON ONLINE.",
-        bytebot: "The button tags are locked. Type Click Me inside the button.",
-        hint1: "A button needs text inside it.",
-        hint2: "Type exactly: Click Me"
+        bytebot: 'Create a button element. The text should be <span class="highlight">"Click Me"</span>.',
+        hint1: "Button text goes between <button> and </button>.",
+        hint2: "Pattern: <button>Click Me</button>",
+        check: function (code) {
+          return code === "<button>clickme</button>";
+        }
       },
 
       4: {
         title: "Mission 4: Links",
-        task: "Create a portal link that says: Visit Site.",
-        type: "single",
-        prefix: "<a href=\"#\">",
-        suffix: "</a>",
-        answer: "visitsite",
+        task: 'Type the full link code to show <span class="highlight">"Visit Site"</span>.',
+        starter: '<a href="#"></a>',
+        tag: "a",
         success: "PORTAL LINK ACTIVATED.",
-        bytebot: "The link tag and href are locked. Type Visit Site as the link text.",
-        hint1: "The visible link text goes between the a tags.",
-        hint2: "Type exactly: Visit Site"
+        bytebot: 'Create an anchor tag. Use href="#" and make the visible text <span class="highlight">"Visit Site"</span>.',
+        hint1: "The href attribute goes inside the opening <a> tag.",
+        hint2: 'Pattern: <a href="#">Visit Site</a>',
+        check: function (code) {
+          return code === '<ahref="#">visitsite</a>';
+        }
       },
 
       5: {
         title: "Mission 5: Images",
-        task: "Load the arcade badge image by typing: image.png.",
-        type: "single",
-        prefix: "<img src=\"",
-        suffix: "\">",
-        answer: "image.png",
+        task: 'Type the full image code using <span class="highlight">"image.png"</span>.',
+        starter: '<img src="">',
+        tag: "img",
+        selfClosing: true,
         success: "IMAGE MODULE LOADED.",
-        bytebot: "The img tag is locked. Type image.png inside the src value.",
-        hint1: "The image file name belongs inside src.",
-        hint2: "Type exactly: image.png"
+        bytebot: 'Create an image tag and set the src value to <span class="highlight">"image.png"</span>.',
+        hint1: "The image tag uses src to point to the file.",
+        hint2: 'Pattern: <img src="image.png">',
+        check: function (code) {
+          return code === '<imgsrc="image.png">';
+        }
       },
 
       6: {
         title: "Mission 6: Lists",
-        task: "Create an inventory item by writing: Code.",
-        type: "single",
-        prefix: "<ul>\n  <li>",
-        suffix: "</li>\n</ul>",
-        answer: "code",
+        task: 'Type the full list code with one item: <span class="highlight">"Code"</span>.',
+        starter: "<ul>\n  <li></li>\n</ul>",
+        tag: "ul",
+        extraTags: ["li"],
         success: "INVENTORY SYSTEM RESTORED.",
-        bytebot: "The ul and li tags are locked. Type Code inside the list item.",
-        hint1: "A list item needs text inside the li tags.",
-        hint2: "Type exactly: Code"
+        bytebot: 'Create a ul list. Inside it, add one li item that says <span class="highlight">"Code"</span>.',
+        hint1: "A list item must be inside the ul tag.",
+        hint2: "Pattern: <ul><li>Code</li></ul>",
+        check: function (code) {
+          return code === "<ul><li>code</li></ul>";
+        }
       },
 
       7: {
         title: "BOSS MODE: Profile Card",
-        task: "Build a profile card by filling in the missing parts.",
-        type: "boss",
+        task: 'Build a profile card using <span class="highlight">"h1, p, img, and button"</span>.',
+        starter: "<h1>Your Name</h1>\n<p>Your bio here</p>\n<img src=\"profile.png\">\n<button>Follow Me</button>",
+        boss: true,
         success: "BOSS CLEARED: CSS CIRCUIT UNLOCKED.",
-        bytebot: "Final HTML test. The tags are locked. Fill in the profile name, bio, image source, and button text.",
-        hint1: "Fill in all four fields.",
-        hint2: "Example: name, bio, profile.png, and a button label."
+        bytebot: 'Final HTML test. Your card must include <span class="highlight">"h1, p, img, and button"</span>.',
+        hint1: "You need h1, p, img src=\"profile.png\", and button.",
+        hint2: "Make sure all required tags are present.",
+        check: function (code) {
+          const hasH1 = code.includes("<h1>") && code.includes("</h1>");
+          const hasP = code.includes("<p>") && code.includes("</p>");
+          const hasImg = code.includes('<imgsrc="profile.png">');
+          const hasButton = code.includes("<button>") && code.includes("</button>");
+
+          return hasH1 && hasP && hasImg && hasButton;
+        }
       }
     };
 
@@ -254,105 +257,159 @@
       const task = document.getElementById("mission-task");
       const result = document.getElementById("result");
       const hint = document.getElementById("hint");
+      const warning = document.getElementById("warning");
       const bytebot = document.getElementById("bytebot-message");
+      const codeBox = document.getElementById("code");
 
       attempts = 0;
       result.innerText = "";
       hint.innerText = "";
+      warning.innerText = "";
 
       if (!mission) {
         title.innerText = "HTML ARENA COMPLETE!";
         task.innerText = "You completed all HTML missions.";
         bytebot.innerText = "CSS Circuit is ready. Head back to Mission Control.";
-        document.getElementById("editor-box").innerHTML = "";
+        codeBox.value = "";
         updatePreview();
         return;
       }
 
       title.innerText = mission.title;
-      task.innerText = mission.task;
-      bytebot.innerText = mission.bytebot;
+      task.innerHTML = mission.task;
+      bytebot.innerHTML = mission.bytebot;
+      codeBox.value = mission.starter;
 
-      buildEditor(mission);
       updatePreview();
     }
 
-    function buildEditor(mission) {
-      const editor = document.getElementById("editor-box");
-
-      if (mission.type === "single") {
-        editor.innerHTML = `
-          <div class="code-line">
-            <span class="locked-code">${escapeHTML(mission.prefix)}</span>
-            <input id="mission-input" class="code-input" type="text" autocomplete="off">
-            <span class="locked-code">${escapeHTML(mission.suffix)}</span>
-          </div>
-        `;
-
-        document.getElementById("mission-input").addEventListener("input", updatePreview);
-      }
-
-      if (mission.type === "boss") {
-        editor.innerHTML = `
-          <div class="code-line">
-            <span class="locked-code">&lt;h1&gt;</span>
-            <input id="boss-name" class="code-input" type="text" placeholder="name">
-            <span class="locked-code">&lt;/h1&gt;</span>
-          </div>
-
-          <div class="code-line">
-            <span class="locked-code">&lt;p&gt;</span>
-            <input id="boss-bio" class="code-input" type="text" placeholder="bio">
-            <span class="locked-code">&lt;/p&gt;</span>
-          </div>
-
-          <div class="code-line">
-            <span class="locked-code">&lt;img src="</span>
-            <input id="boss-img" class="code-input" type="text" placeholder="profile.png">
-            <span class="locked-code">"&gt;</span>
-          </div>
-
-          <div class="code-line">
-            <span class="locked-code">&lt;button&gt;</span>
-            <input id="boss-btn" class="code-input" type="text" placeholder="button text">
-            <span class="locked-code">&lt;/button&gt;</span>
-          </div>
-        `;
-
-        ["boss-name", "boss-bio", "boss-img", "boss-btn"].forEach(function (id) {
-          document.getElementById(id).addEventListener("input", updatePreview);
-        });
-      }
+    function normalize(input) {
+      return input.replace(/\s+/g, "").toLowerCase();
     }
 
-    function getCode() {
+    function countMatches(text, pattern) {
+      const matches = text.match(pattern);
+      return matches ? matches.length : 0;
+    }
+
+    function checkSyntaxWarnings(rawCode) {
+      const warning = document.getElementById("warning");
       const mission = missions[level];
 
-      if (!mission) return "";
+      warning.innerText = "";
 
-      if (mission.type === "single") {
-        const userText = document.getElementById("mission-input").value;
-        return mission.prefix + userText + mission.suffix;
+      if (!mission || rawCode.trim().length === 0) {
+        return;
       }
 
-      if (mission.type === "boss") {
-        const name = document.getElementById("boss-name").value;
-        const bio = document.getElementById("boss-bio").value;
-        const img = document.getElementById("boss-img").value;
-        const btn = document.getElementById("boss-btn").value;
+      const code = rawCode.trim();
+      const normalized = normalize(code);
 
-        return `
-          <h1>${name}</h1>
-          <p>${bio}</p>
-          <img src="${img}">
-          <button>${btn}</button>
-        `;
+      const openBracketCount = countMatches(code, /</g);
+      const closeBracketCount = countMatches(code, />/g);
+
+      if (openBracketCount === 0 || closeBracketCount === 0) {
+        warning.innerText = "⚠️ Uh-oh, you removed a tag bracket < or > — add it back!";
+        return;
+      }
+
+      if (openBracketCount !== closeBracketCount) {
+        warning.innerText = "⚠️ Your < and > brackets are not balanced. Every tag needs both sides.";
+        return;
+      }
+
+      if (code.includes("< ") || code.includes("</ ")) {
+        warning.innerText = "⚠️ There should be no space right after < or </ inside a tag.";
+        return;
+      }
+
+      if (mission.boss) {
+        const requiredTags = ["h1", "p", "img", "button"];
+
+        for (let i = 0; i < requiredTags.length; i++) {
+          const tag = requiredTags[i];
+
+          if (tag === "img") {
+            if (!normalized.includes("<img")) {
+              warning.innerText = "⚠️ Boss Mode needs an image tag. Add <img src=\"profile.png\">.";
+              return;
+            }
+          } else {
+            if (!normalized.includes("<" + tag + ">")) {
+              warning.innerText = "⚠️ Missing opening tag: <" + tag + ">";
+              return;
+            }
+
+            if (!normalized.includes("</" + tag + ">")) {
+              warning.innerText = "⚠️ Missing closing tag: </" + tag + ">";
+              return;
+            }
+          }
+        }
+
+        return;
+      }
+
+      if (mission.selfClosing) {
+        if (!normalized.includes("<img")) {
+          warning.innerText = "⚠️ Missing image tag. Start with <img.";
+          return;
+        }
+
+        if (!normalized.includes("src=")) {
+          warning.innerText = "⚠️ Missing src attribute. The image needs src=\"image.png\".";
+          return;
+        }
+
+        if (!normalized.includes("image.png")) {
+          warning.innerText = "⚠️ Missing image file name: \"image.png\".";
+          return;
+        }
+
+        return;
+      }
+
+      if (mission.tag) {
+        const tag = mission.tag;
+
+        if (!normalized.includes("<" + tag + ">") && tag !== "a") {
+          warning.innerText = "⚠️ Missing opening tag: <" + tag + ">";
+          return;
+        }
+
+        if (tag === "a" && !normalized.includes("<ahref=")) {
+          warning.innerText = "⚠️ Missing link opening tag. Use something like <a href=\"#\">.";
+          return;
+        }
+
+        if (!normalized.includes("</" + tag + ">")) {
+          warning.innerText = "⚠️ Missing closing tag: </" + tag + ">";
+          return;
+        }
+      }
+
+      if (mission.extraTags) {
+        for (let i = 0; i < mission.extraTags.length; i++) {
+          const tag = mission.extraTags[i];
+
+          if (!normalized.includes("<" + tag + ">")) {
+            warning.innerText = "⚠️ Missing opening tag: <" + tag + ">";
+            return;
+          }
+
+          if (!normalized.includes("</" + tag + ">")) {
+            warning.innerText = "⚠️ Missing closing tag: </" + tag + ">";
+            return;
+          }
+        }
       }
     }
 
     function checkCode() {
-      const mission = missions[level];
+      const rawCode = document.getElementById("code").value;
+      const code = normalize(rawCode);
       const result = document.getElementById("result");
+      const mission = missions[level];
 
       updatePreview();
 
@@ -361,37 +418,14 @@
         return;
       }
 
-      if (mission.type === "single") {
-        const userInput = document.getElementById("mission-input").value;
-        const answer = normalize(userInput);
-
-        if (answer === mission.answer) {
-          success(10, level + 1, mission.success);
-        } else {
-          attempts++;
-          showHint(mission);
-          result.innerText = "❌ System not restored yet.";
-        }
+      if (mission.check(code)) {
+        const reward = mission.boss ? 50 : 10;
+        success(reward, level + 1, mission.success);
+      } else {
+        attempts++;
+        showHint(mission);
+        result.innerText = "❌ System not restored yet.";
       }
-
-      if (mission.type === "boss") {
-        const name = document.getElementById("boss-name").value.trim();
-        const bio = document.getElementById("boss-bio").value.trim();
-        const img = document.getElementById("boss-img").value.trim().toLowerCase();
-        const btn = document.getElementById("boss-btn").value.trim();
-
-        if (name && bio && img === "profile.png" && btn) {
-          success(50, 8, mission.success);
-        } else {
-          attempts++;
-          showHint(mission);
-          result.innerText = "❌ Boss requirements missing.";
-        }
-      }
-    }
-
-    function normalize(input) {
-      return input.replace(/\s+/g, "").toLowerCase();
     }
 
     function showHint(mission) {
@@ -404,14 +438,16 @@
       }
     }
 
-    function success(cpGain, nextLevel, message) {
+    function success(xpGain, nextLevel, message) {
       const result = document.getElementById("result");
       const hint = document.getElementById("hint");
+      const warning = document.getElementById("warning");
 
-      result.innerText = "✅ " + message + " +" + cpGain + " CP";
+      result.innerText = "✅ " + message + " +" + xpGain + " XP";
       hint.innerText = "";
+      warning.innerText = "";
 
-      addCP(cpGain);
+      addXP(xpGain);
       level = nextLevel;
       localStorage.setItem("html-level", level);
 
@@ -420,22 +456,20 @@
       }, 1400);
     }
 
-    function addCP(points) {
-      let cp = parseInt(localStorage.getItem("cp")) || 0;
-      cp += points;
-      localStorage.setItem("cp", cp);
+    function addXP(points) {
+      let xp = parseInt(localStorage.getItem("xp")) || 0;
+      xp += points;
+      localStorage.setItem("xp", xp);
     }
 
     function updatePreview() {
-      document.getElementById("preview").srcdoc = getCode();
+      const code = document.getElementById("code").value;
+
+      document.getElementById("preview").srcdoc = code;
+      checkSyntaxWarnings(code);
     }
 
-    function escapeHTML(text) {
-      return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    }
+    document.getElementById("code").addEventListener("input", updatePreview);
 
     loadMission();
   </script>
