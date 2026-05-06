@@ -111,7 +111,7 @@ button:hover {
   <p id="instruction"></p>
   <textarea id="code"></textarea><br>
   <button onclick="submitAnswer()">SUBMIT</button>
-  <button onclick="window.location.href='index.html'">EXIT</button>
+  <button onclick="window.location.href='dashboard.html'">EXIT</button>
 </div>
 
 <p id="result"></p>
@@ -272,7 +272,7 @@ function winGame() {
   document.getElementById("result").innerText = "🏆 CHALLENGE CLEARED! +" + reward + " XP";
 
   setTimeout(function () {
-    window.location.href = "index.html";
+    window.location.href = "dashboard.html";
   }, 3000);
 }
 

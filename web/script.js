@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   const startButton = document.getElementById("start-btn");
-  const startScreen = document.getElementById("start-screen");
-  const homeScreen = document.getElementById("home-screen");
 
   const cssCard = document.getElementById("css-card");
   const jsCard = document.getElementById("js-card");
@@ -20,8 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // START BUTTON
   if (startButton) {
     startButton.addEventListener("click", function () {
-      startScreen.style.display = "none";
-      homeScreen.style.display = "block";
+      window.location.href = "dashboard.html";
     });
   }
 
@@ -81,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (jsCard) {
     jsCard.addEventListener("click", function () {
       if (cssLevel >= 7) {
-        alert("JAVASCRIPT Core coming next!");
+        window.location.href = "js-map.html";
       } else {
         alert("Complete CSS Circuit first!");
       }
