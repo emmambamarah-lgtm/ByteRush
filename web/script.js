@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (jsCard) {
     jsCard.addEventListener("click", function () {
       if (cssLevel >= 7) {
-        alert("JS Core coming next!");
+        alert("JAVASCRIPT Core coming next!");
       } else {
         alert("Complete CSS Circuit first!");
       }

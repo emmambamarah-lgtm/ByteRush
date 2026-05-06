@@ -1,159 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>JS Core Map</title>
-  <link rel="stylesheet" href="arcade-theme.css">
+<meta charset="UTF-8">
+<title>JavaScript Core</title>
+<link rel="stylesheet" href="arcade-theme.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-  <style>
-    body {
-      text-align: center;
-      padding: 40px;
-      margin: 0;
-    }
+body {
+  background: #03080f;
+  color: #39ff5a;
+  font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  padding: 40px;
+  margin: 0;
+}
 
-    body.theme-js {
-      --accent: #FF0000;
-    }
+h1 {
+  font-size: 22px;
+  text-shadow: 0 0 10px #39ff5a;
+}
 
-    .map-header {
-      max-width: 900px;
-      margin: 0 auto 25px;
-    }
+p {
+  font-size: 10px;
+  color: #9affaa;
+}
 
-    .map-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      max-width: 950px;
-      margin: 30px auto;
-    }
+.stats-panel {
+  margin: 20px auto;
+  border: 2px solid #39ff5a;
+  background: #050b12;
+  padding: 15px;
+  width: 320px;
+  box-shadow: 0 0 15px rgba(57, 255, 90, 0.25);
+}
 
-    .node {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 22px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+.stats-panel p {
+  margin: 8px 0;
+}
 
-    .node:hover {
-      border-color: #FF0000;
-      transform: translateY(-3px);
-    }
+.unlock-message {
+  display: none;
+  margin: 25px auto;
+  padding: 18px;
+  width: 340px;
+  border: 2px solid #39ff5a;
+  background: #39ff5a;
+  color: black;
+  box-shadow: 0 0 25px #39ff5a;
+  font-size: 11px;
+}
 
-    .node.locked {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
+.reset-area {
+  margin-top: 14px;
+}
 
-    .node.completed {
-      border-color: #FF0000;
-    }
+.reset-btn {
+  background: transparent;
+  color: #ff4d4d;
+  border: 2px solid #ff4d4d;
+  padding: 8px 16px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  cursor: pointer;
+}
 
-    .status {
-      font-size: 13px;
-      margin-top: 8px;
-    }
+.reset-btn:hover {
+  background: #ff4d4d;
+  color: black;
+  box-shadow: 0 0 10px #ff4d4d;
+}
 
-    @media (max-width: 800px) {
-      .map-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.reset-warning {
+  font-size: 8px;
+  opacity: 0.4;
+  margin-top: 6px;
+}
+
+.map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-top: 40px;
+}
+
+.node {
+  border: 2px solid #39ff5a;
+  padding: 15px 25px;
+  width: 320px;
+  background: #050b12;
+  font-size: 10px;
+  transition: 0.2s;
+  position: relative;
+}
+
+.node.completed {
+  color: #39ff5a;
+  box-shadow: 0 0 12px rgba(57, 255, 90, 0.6);
+}
+
+.node.active {
+  background: #39ff5a;
+  color: black;
+  cursor: pointer;
+  box-shadow: 0 0 25px #39ff5a;
+}
+
+.node.active:hover {
+  transform: scale(1.05);
+}
+
+.node.locked {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.node.boss {
+  border-color: #ffdd57;
+}
+
+.node.boss.active {
+  background: #ffdd57;
+  color: black;
+  box-shadow: 0 0 25px #ffdd57;
+}
+
+.line {
+  width: 2px;
+  height: 22px;
+  background: rgba(57,255,90,0.45);
+}
+
+.back-btn {
+  margin-top: 40px;
+  background: transparent;
+  color: #39ff5a;
+  border: 2px solid #39ff5a;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+}
+
+.back-btn:hover {
+  background: #39ff5a;
+  color: black;
+}
+</style>
 </head>
 
 <body class="theme-js">
 
-  <div class="map-header">
-    <h1>JS CORE</h1>
-    <p>Complete JavaScript missions and unlock interaction skills.</p>
-  </div>
+<h1>JAVASCRIPT ARENA</h1>
+<p>POWER THE INTERACTION</p>
 
-  <div class="map-grid">
+<div class="stats-panel">
+  <p>XP: <span id="xp">0</span></p>
+  <p>MISSIONS COMPLETED: <span id="completed">0</span> / 7</p>
+  <p>CURRENT MISSION: <span id="current">1</span></p>
+</div>
 
-    <div class="node" id="node-1" onclick="openMission(1)">
-      <h3>Mission 1</h3>
-      <p>Variables</p>
-      <div class="status" id="status-1">▶ Ready</div>
-    </div>
+<div id="unlock-message" class="unlock-message">
+  🔓 NEXT WORLD UNLOCKED
+</div>
 
-    <div class="node locked" id="node-2" onclick="openMission(2)">
-      <h3>Mission 2</h3>
-      <p>Functions</p>
-      <div class="status" id="status-2">🔒 Locked</div>
-    </div>
+<div class="reset-area">
+  <button onclick="resetProgress()" class="reset-btn">RESET PROGRESS</button>
+  <p class="reset-warning">this erases all progress</p>
+</div>
 
-    <div class="node locked" id="node-3" onclick="openMission(3)">
-      <h3>Mission 3</h3>
-      <p>Click Events</p>
-      <div class="status" id="status-3">🔒 Locked</div>
-    </div>
+<div class="map" id="map"></div>
 
-    <div class="node locked" id="node-4" onclick="openMission(4)">
-      <h3>Mission 4</h3>
-      <p>Conditions</p>
-      <div class="status" id="status-4">🔒 Locked</div>
-    </div>
+<button class="back-btn" onclick="goBack()">← BACK</button>
 
-    <div class="node locked" id="node-5" onclick="openMission(5)">
-      <h3>Mission 5</h3>
-      <p>Loops</p>
-      <div class="status" id="status-5">🔒 Locked</div>
-    </div>
+<script>
+const missions = [
+  "Mission 1: Variables",
+  "Mission 2: Functions",
+  "Mission 3: Buttons & Click Events",
+  "Mission 4: Conditions",
+  "Mission 5: Loops",
+  "Mission 6: DOM Manipulation",
+  "BOSS MODE: Counter App"
+];
 
-    <div class="node locked" id="node-6" onclick="openMission(6)">
-      <h3>Mission 6</h3>
-      <p>DOM Text</p>
-      <div class="status" id="status-6">🔒 Locked</div>
-    </div>
+let level = parseInt(localStorage.getItem("js-level")) || 1;
+let xp = parseInt(localStorage.getItem("xp")) || 0;
 
-    <div class="node locked" id="node-7" onclick="openMission(7)">
-      <h3>Boss Mode</h3>
-      <p>Click Counter App</p>
-      <div class="status" id="status-7">🔒 Locked</div>
-    </div>
+const map = document.getElementById("map");
 
-  </div>
+function loadStats() {
+  const completed = Math.min(level - 1, missions.length);
+  const currentMission = level > missions.length ? "COMPLETE" : level;
 
-  <button onclick="window.location.href='index.html'">← Back to Home</button>
+  document.getElementById("xp").innerText = xp;
+  document.getElementById("completed").innerText = completed;
+  document.getElementById("current").innerText = currentMission;
 
-  <script>
-    let jsLevel = parseInt(localStorage.getItem("js-level")) || 1;
+  if (level > missions.length) {
+    document.getElementById("unlock-message").style.display = "block";
+  } else {
+    document.getElementById("unlock-message").style.display = "none";
+  }
+}
 
-    function updateMap() {
-      for (let i = 1; i <= 7; i++) {
-        const node = document.getElementById("node-" + i);
-        const status = document.getElementById("status-" + i);
+function buildMap() {
+  map.innerHTML = "";
 
-        if (i < jsLevel) {
-          node.classList.remove("locked");
-          node.classList.add("completed");
-          status.innerText = "✅ Completed";
-        } else if (i === jsLevel) {
-          node.classList.remove("locked");
-          status.innerText = "▶ Ready";
-        } else {
-          node.classList.add("locked");
-          status.innerText = "🔒 Locked";
-        }
-      }
+  missions.forEach(function (name, index) {
+    const node = document.createElement("div");
+    node.classList.add("node");
+
+    const missionNumber = index + 1;
+    const isBoss = missionNumber === missions.length;
+
+    if (isBoss) {
+      node.classList.add("boss");
     }
 
-    function openMission(missionNumber) {
-      if (missionNumber > jsLevel) {
-        alert("Complete the previous JS mission first.");
-        return;
-      }
+    if (missionNumber < level) {
+      node.classList.add("completed");
+      node.innerText = "✅ " + name;
+    } else if (missionNumber === level) {
+      node.classList.add("active");
+      node.innerText = isBoss ? "⚔️ " + name : "⚡ " + name;
 
-      localStorage.setItem("current-js-mission", missionNumber);
-      window.location.href = "js-arena.html";
+      node.onclick = function () {
+        window.location.href = "js-arena.html";
+      };
+    } else {
+      node.classList.add("locked");
+      node.innerText = "🔒 " + name;
     }
 
-    updateMap();
-  </script>
+    map.appendChild(node);
+
+    if (index < missions.length - 1) {
+      const line = document.createElement("div");
+      line.classList.add("line");
+      map.appendChild(line);
+    }
+  });
+}
+
+function resetProgress() {
+  const confirmReset = confirm("Reset ALL JavaScript progress?");
+
+  if (confirmReset) {
+    localStorage.removeItem("js-level");
+    localStorage.removeItem("xp");
+
+    level = 1;
+    xp = 0;
+
+    loadStats();
+    buildMap();
+  }
+}
+
+function goBack() {
+  window.location.href = "index.html";
+}
+
+loadStats();
+buildMap();
+</script>
 
 </body>
 </html>
