@@ -1,51 +1,38 @@
 /* =====================================================
-   BYTERUSH — CLEAN DARK LEARNING THEME
-   Simple • Readable • Parent-Friendly
+   BYTERUSH — PREMIUM DARK CYBERPIXEL THEME
+   Clean • Sharp • No Neon
    ===================================================== */
 
-
 :root {
-  --bg: #0f172a;
-  --panel: #111827;
-  --panel-light: #1f2937;
+  --bg: #03080F;
+  --panel: #050B12;
+  --panel-light: #08111C;
 
+  --text: #39FF5A;
+  --muted: #8FBF98;
 
-  --text: #f9fafb;
-  --muted: #9ca3af;
-
-
-  --accent: #22c55e;
-  --border: #374151;
+  --accent: #39FF5A;
+  --danger: #FF3B3B;
+  --border: #1F3A2A;
 }
-
 
 /* PAGE ACCENTS */
 .theme-home,
-.theme-html { --accent: #22c55e; }
-
-
-.theme-css { --accent: #3b82f6; }
-
-
-.theme-js { --accent: #FF0000; }
-
-
-.theme-projects { --accent: #ec4899; }
-
-
-.theme-challenges { --accent: #ef4444; }
-
-
-.theme-account { --accent: #06b6d4; }
-
+.theme-html,
+.theme-css,
+.theme-js,
+.theme-projects,
+.theme-challenges,
+.theme-account {
+  --accent: #39FF5A;
+}
 
 /* BASE */
 body {
   background: var(--bg) !important;
   color: var(--text) !important;
-  font-family: system-ui, sans-serif;
+  font-family: monospace, system-ui, sans-serif;
 }
-
 
 /* TEXT */
 h1, h2, h3, h4 {
@@ -53,12 +40,10 @@ h1, h2, h3, h4 {
   margin-bottom: 8px;
 }
 
-
 p {
   color: var(--muted) !important;
   line-height: 1.6;
 }
-
 
 /* LAYOUT */
 .dashboard-layout {
@@ -66,11 +51,9 @@ p {
   padding: 24px !important;
 }
 
-
 .main-area {
   padding: 28px !important;
 }
-
 
 /* SIDEBAR */
 .sidebar {
@@ -79,14 +62,12 @@ p {
   padding: 20px !important;
 }
 
-
 .logo {
   color: var(--text) !important;
   font-weight: bold;
   margin-bottom: 20px;
   text-decoration: none;
 }
-
 
 /* NAV */
 .nav-item {
@@ -95,13 +76,12 @@ p {
   border-radius: 6px;
 }
 
-
 .nav-item:hover,
 .nav-item.active {
   background: var(--panel-light) !important;
   color: var(--text) !important;
+  border: 1px solid var(--accent) !important;
 }
-
 
 /* PANELS */
 .hero-panel,
@@ -117,7 +97,6 @@ p {
   padding: 20px !important;
 }
 
-
 /* CARDS */
 .mission-card,
 .project-card {
@@ -128,89 +107,112 @@ p {
   transition: 0.2s;
 }
 
-
 .mission-card:hover,
 .project-card:hover {
   border-color: var(--accent) !important;
+  transform: translateY(-2px);
 }
-
 
 /* CARD ICON */
 .card-icon {
   color: var(--accent) !important;
 }
 
-
 /* STATS */
 .stat-box {
   background: var(--panel-light) !important;
+  border: 1px solid var(--border) !important;
   border-radius: 8px !important;
   padding: 12px;
 }
 
-
 /* BUTTONS */
 button {
-  background: var(--accent) !important;
-  color: #fff !important;
-  border: none !important;
+  background: transparent !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
   border-radius: 6px;
   padding: 10px 14px;
   cursor: pointer;
+  font-family: monospace;
 }
-
 
 button:hover {
-  opacity: 0.9;
+  background: var(--accent) !important;
+  color: var(--bg) !important;
 }
 
+/* DANGER BUTTONS */
+.reset-btn,
+.danger-btn {
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+.reset-btn:hover,
+.danger-btn:hover {
+  background: var(--danger) !important;
+  color: var(--bg) !important;
+}
 
 /* EDITOR */
 textarea {
-  background: #020617 !important;
-  color: #e5e7eb !important;
+  background: var(--panel) !important;
+  color: var(--text) !important;
   border: 1px solid var(--border) !important;
   border-radius: 8px;
   padding: 12px;
+  font-family: monospace;
 }
-
 
 /* PREVIEW */
-.preview {
-  background: #020617 !important;
+iframe,
+.preview,
+.preview-box {
+  background: var(--panel) !important;
+  color: var(--text) !important;
   border: 1px solid var(--border) !important;
   border-radius: 8px;
-  padding: 16px;
 }
 
-
 /* FEEDBACK */
-.success { color: #22c55e !important; }
-.error { color: #ef4444 !important; }
-.progress { color: #f59e0b !important; }
+.success {
+  color: var(--accent) !important;
+}
 
+.error,
+#warning {
+  color: var(--danger) !important;
+}
+
+.progress {
+  color: var(--accent) !important;
+}
+
+/* HIGHLIGHT */
+.highlight {
+  color: var(--danger) !important;
+  font-weight: bold;
+}
 
 /* OVERLAY */
 #completion-overlay {
-  background: rgba(0,0,0,0.85) !important;
+  background: rgba(3, 8, 15, 0.92) !important;
 }
-
 
 .overlay-text {
   color: var(--text) !important;
 }
 
-
 .badge {
   color: var(--accent) !important;
 }
 
-
 /* MOBILE */
 @media (max-width: 900px) {
   .dashboard-layout,
-  .editor-layout {
+  .editor-layout,
+  .arena-layout {
     grid-template-columns: 1fr !important;
   }
 }
-

@@ -3,112 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <title>JavaScript Core</title>
-<link rel="stylesheet" href="arcade-theme.css">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+:root {
+  --terminal-green: #39FF5A;
+  --danger-red: #FF3B3B;
+  --background: #03080F;
+  --panel: #050B12;
+  --panel-alt: #08111A;
+  --border: #183222;
+  --muted: #7FA58A;
+  --boss: #D7B84F;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  background: #03080f;
-  color: #39ff5a;
+  background: var(--background);
+  color: var(--terminal-green);
   font-family: 'Press Start 2P', monospace;
   text-align: center;
-  padding: 40px;
+  padding: 32px 20px;
   margin: 0;
+  min-height: 100vh;
+
+  background-image:
+    linear-gradient(rgba(57,255,90,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57,255,90,0.03) 1px, transparent 1px);
+
+  background-size: 42px 42px;
 }
 
 h1 {
-  font-size: 22px;
-  text-shadow: 0 0 10px #39ff5a;
+  font-size: 20px;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  color: var(--terminal-green);
 }
 
 p {
-  font-size: 10px;
-  color: #9affaa;
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.7;
 }
 
 .stats-panel {
-  margin: 20px auto;
-  border: 2px solid #39ff5a;
-  background: #050b12;
-  padding: 15px;
+  margin: 22px auto;
+  border: 2px solid var(--border);
+  background: var(--panel);
+  padding: 16px;
   width: 320px;
-  box-shadow: 0 0 15px rgba(57, 255, 90, 0.25);
 }
 
 .stats-panel p {
-  margin: 8px 0;
+  margin: 10px 0;
 }
 
 .unlock-message {
   display: none;
-  margin: 25px auto;
-  padding: 18px;
+  margin: 22px auto;
+  padding: 16px;
   width: 340px;
-  border: 2px solid #39ff5a;
-  background: #39ff5a;
-  color: black;
-  box-shadow: 0 0 25px #39ff5a;
-  font-size: 11px;
+  border: 2px solid var(--terminal-green);
+  background: var(--panel);
+  color: var(--terminal-green);
+  font-size: 10px;
 }
 
 .reset-area {
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .reset-btn {
   background: transparent;
-  color: #ff4d4d;
-  border: 2px solid #ff4d4d;
-  padding: 8px 16px;
+  color: var(--danger-red);
+  border: 2px solid var(--danger-red);
+  padding: 10px 14px;
   font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
+  font-size: 8px;
   cursor: pointer;
+  transition: 0.15s ease;
 }
 
 .reset-btn:hover {
-  background: #ff4d4d;
-  color: black;
-  box-shadow: 0 0 10px #ff4d4d;
+  background: var(--danger-red);
+  color: var(--background);
 }
 
 .reset-warning {
-  font-size: 8px;
-  opacity: 0.4;
-  margin-top: 6px;
+  font-size: 7px;
+  color: var(--danger-red);
+  opacity: 0.6;
+  margin-top: 8px;
 }
 
 .map {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  margin-top: 40px;
+  gap: 14px;
+  margin-top: 36px;
 }
 
 .node {
-  border: 2px solid #39ff5a;
-  padding: 15px 25px;
+  border: 2px solid var(--border);
+  padding: 14px 18px;
   width: 320px;
-  background: #050b12;
-  font-size: 10px;
-  transition: 0.2s;
-  position: relative;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 9px;
+  transition: 0.18s ease;
 }
 
 .node.completed {
-  color: #39ff5a;
-  box-shadow: 0 0 12px rgba(57, 255, 90, 0.6);
+  color: var(--terminal-green);
+  border-color: #245A38;
+  background: var(--panel-alt);
 }
 
 .node.active {
-  background: #39ff5a;
-  color: black;
+  background: #112417;
+  color: var(--terminal-green);
+  border-color: var(--terminal-green);
   cursor: pointer;
-  box-shadow: 0 0 25px #39ff5a;
 }
 
 .node.active:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .node.locked {
@@ -117,35 +142,58 @@ p {
 }
 
 .node.boss {
-  border-color: #ffdd57;
+  border-color: #66562B;
 }
 
 .node.boss.active {
-  background: #ffdd57;
-  color: black;
-  box-shadow: 0 0 25px #ffdd57;
+  background: #2B2411;
+  border-color: var(--boss);
+  color: var(--boss);
 }
 
 .line {
   width: 2px;
-  height: 22px;
-  background: rgba(57,255,90,0.45);
+  height: 16px;
+  background: var(--border);
 }
 
 .back-btn {
-  margin-top: 40px;
+  margin-top: 36px;
   background: transparent;
-  color: #39ff5a;
-  border: 2px solid #39ff5a;
-  padding: 10px 20px;
+  color: var(--terminal-green);
+  border: 2px solid var(--terminal-green);
+  padding: 12px 18px;
   cursor: pointer;
   font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
+  font-size: 8px;
+  transition: 0.15s ease;
 }
 
 .back-btn:hover {
-  background: #39ff5a;
-  color: black;
+  background: var(--terminal-green);
+  color: var(--background);
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 24px 14px;
+  }
+
+  h1 {
+    font-size: 16px;
+  }
+
+  .stats-panel,
+  .unlock-message,
+  .node {
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .node {
+    font-size: 8px;
+    padding: 13px 14px;
+  }
 }
 </style>
 </head>
@@ -166,8 +214,8 @@ p {
 </div>
 
 <div class="reset-area">
-  <button onclick="resetProgress()" class="reset-btn">RESET PROGRESS</button>
-  <p class="reset-warning">this erases all progress</p>
+  <button onclick="resetProgress()" class="reset-btn">RESET JS PROGRESS</button>
+  <p class="reset-warning">this erases javascript progress only</p>
 </div>
 
 <div class="map" id="map"></div>
@@ -175,6 +223,13 @@ p {
 <button class="back-btn" onclick="goBack()">← BACK</button>
 
 <script>
+const cssLevel = parseInt(localStorage.getItem("css-level")) || 1;
+
+if (cssLevel < 8) {
+  alert("JavaScript Arena is locked. Finish CSS Circuit first!");
+  window.location.href = "dashboard.html";
+}
+
 const missions = [
   "Mission 1: Variables",
   "Mission 2: Functions",
@@ -245,14 +300,12 @@ function buildMap() {
 }
 
 function resetProgress() {
-  const confirmReset = confirm("Reset ALL JavaScript progress?");
+  const confirmReset = confirm("Reset JavaScript progress?");
 
   if (confirmReset) {
     localStorage.removeItem("js-level");
-    localStorage.removeItem("xp");
 
     level = 1;
-    xp = 0;
 
     loadStats();
     buildMap();
@@ -269,3 +322,5 @@ buildMap();
 
 </body>
 </html>
+
+
