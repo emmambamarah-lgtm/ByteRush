@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings | ByteRush</title>
+
+<link rel="stylesheet" href="arcade-theme.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --green: #39FF5A;
+  --red: #FF3B3B;
+  --bg: #03080F;
+  --panel: #050B12;
+  --panel2: #07111D;
+  --text: #E7FFE9;
+  --muted: #8FAF9A;
+  --line: rgba(57,255,90,0.22);
+  --yellow: #FACC15;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(57,255,90,0.08), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(250,204,21,0.06), transparent 30%),
+    linear-gradient(rgba(57,255,90,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57,255,90,0.025) 1px, transparent 1px),
+    var(--bg);
+  background-size: auto, auto, 44px 44px, 44px 44px;
+  color: var(--text);
+  font-family: 'Press Start 2P', monospace;
+  padding: 28px 18px;
+}
+
+button,
+select {
+  font-family: 'Press Start 2P', monospace;
+}
+
+#language-toggle {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 1000;
+  font-size: 8px;
+  padding: 10px;
+  background: var(--panel2);
+  color: var(--yellow);
+  border: 1px solid rgba(250,204,21,0.5);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#language-toggle:hover {
+  color: var(--green);
+  background: rgba(250,204,21,0.08);
+}
+
+.page {
+  width: min(900px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  border: 1px solid var(--line);
+  background: rgba(5,11,18,0.92);
+  padding: 24px;
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+}
+
+.header::before {
+  content: "SYSTEM PANEL";
+  position: absolute;
+  top: -11px;
+  left: 18px;
+  background: var(--bg);
+  color: var(--yellow);
+  border: 1px solid rgba(250,204,21,0.45);
+  padding: 6px 10px;
+  font-size: 7px;
+}
+
+.header::after,
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(250,204,21,0.12);
+  pointer-events: none;
+  border-radius: 14px;
+}
+
+.kicker {
+  color: var(--yellow);
+  font-size: 8px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: clamp(20px, 4vw, 34px);
+  line-height: 1.4;
+  color: var(--green);
+  text-shadow: 3px 3px 0 rgba(250,204,21,0.16);
+  position: relative;
+  z-index: 1;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.8;
+  max-width: 660px;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.settings-grid {
+  margin-top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  background: rgba(5,11,18,0.9);
+  border-radius: 20px;
+  padding: 22px;
+  position: relative;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+}
+
+.card-title {
+  color: var(--yellow);
+  font-size: 10px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+  z-index: 1;
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.setting-info h3 {
+  margin: 0 0 10px;
+  font-size: 9px;
+  color: var(--text);
+}
+
+.setting-info p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.8;
+}
+
+.toggle-btn {
+  min-width: 132px;
+  background: var(--green);
+  color: var(--bg);
+  border: 1px solid var(--green);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 7px;
+  transition: 0.18s ease;
+  box-shadow: 4px 4px 0 rgba(250,204,21,0.45);
+}
+
+.toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0 rgba(250,204,21,0.65);
+}
+
+.toggle-btn.off {
+  color: white;
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 4px 4px 0 rgba(255,59,59,0.22);
+}
+
+.select-box {
+  min-width: 180px;
+  background: var(--panel2);
+  color: var(--yellow);
+  border: 1px solid rgba(250,204,21,0.45);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 7px;
+  cursor: pointer;
+  outline: none;
+}
+
+.select-box:focus {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.bottom-bar {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btn {
+  border: 1px solid rgba(250,204,21,0.55);
+  background: transparent;
+  color: var(--yellow);
+  border-radius: 16px;
+  padding: 14px 18px;
+  cursor: pointer;
+  font-size: 8px;
+  transition: 0.18s ease;
+}
+
+.btn:hover {
+  background: var(--yellow);
+  color: var(--bg);
+  transform: translateY(-2px);
+}
+
+.btn.danger {
+  border-color: rgba(255,59,59,0.55);
+  color: var(--red);
+}
+
+.btn.danger:hover {
+  background: var(--red);
+  color: white;
+}
+
+.save-message {
+  margin-top: 18px;
+  border: 1px solid rgba(250,204,21,0.35);
+  background: rgba(7,17,29,0.92);
+  border-radius: 16px;
+  padding: 16px;
+  color: var(--yellow);
+  font-size: 8px;
+  display: none;
+  box-shadow: 4px 4px 0 rgba(250,204,21,0.14);
+}
+
+.warning-box {
+  border: 1px solid rgba(255,59,59,0.35);
+  background: rgba(255,59,59,0.06);
+  border-radius: 16px;
+  padding: 16px;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.8;
+  position: relative;
+  z-index: 1;
+}
+
+.warning-box strong {
+  color: var(--red);
+}
+
+body.large-text .subtitle,
+body.large-text .setting-info p,
+body.large-text .warning-box {
+  font-size: 9px;
+}
+
+body.large-text .setting-info h3 {
+  font-size: 10px;
+}
+
+body.reduced-motion * {
+  transition: none !important;
+  animation: none !important;
+}
+
+@media(max-width:700px) {
+  #language-toggle {
+    position: static;
+    width: 100%;
+    margin-bottom: 14px;
+  }
+
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .select-box,
+  .toggle-btn {
+    width: 100%;
+  }
+
+  .bottom-bar {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body class="theme-settings">
+
+<button id="language-toggle">FR</button>
+
+<div class="page">
+
+  <header class="header">
+    <div class="kicker">BYTE RUSH / SYSTEM SETTINGS</div>
+    <h1>Game Settings</h1>
+    <p class="subtitle">
+      Customize the ByteRush experience. Keep this page simple. Settings should help the player, not overload them.
+    </p>
+  </header>
+
+  <main class="settings-grid">
+
+    <section class="card">
+      <div class="card-title">DISPLAY SETTINGS</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>LARGE TEXT</h3>
+          <p>Make small instructions easier to read during missions.</p>
+        </div>
+
+        <button id="text-toggle" class="toggle-btn">
+          TEXT OFF
+        </button>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>REDUCED MOTION</h3>
+          <p>Reduce hover movement and animations for a calmer game feel.</p>
+        </div>
+
+        <button id="motion-toggle" class="toggle-btn">
+          MOTION OFF
+        </button>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>SCREEN MODE</h3>
+          <p>Choose how focused the game interface should feel.</p>
+        </div>
+
+        <select id="screen-mode" class="select-box">
+          <option value="normal">NORMAL</option>
+          <option value="focus">FOCUS</option>
+          <option value="compact">COMPACT</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">GAMEPLAY SETTINGS</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>MISSION TIPS</h3>
+          <p>Show simple beginner-friendly instructions before missions.</p>
+        </div>
+
+        <button id="tips-toggle" class="toggle-btn">
+          TIPS ON
+        </button>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>AUTO SAVE</h3>
+          <p>Save progress in the browser while the player completes missions.</p>
+        </div>
+
+        <button id="autosave-toggle" class="toggle-btn">
+          SAVE ON
+        </button>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>DIFFICULTY</h3>
+          <p>Beginner mode keeps the game easier for new coders.</p>
+        </div>
+
+        <select id="difficulty" class="select-box">
+          <option value="beginner">BEGINNER</option>
+          <option value="normal">NORMAL</option>
+          <option value="challenge">CHALLENGE</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">LANGUAGE SETTINGS</div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <h3>LANGUAGE DISPLAY</h3>
+          <p>This saves the language choice. Translation logic can be connected later.</p>
+        </div>
+
+        <select id="language-select" class="select-box">
+          <option value="en">ENGLISH</option>
+          <option value="fr">FRANÇAIS</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title">RESET SETTINGS</div>
+
+      <div class="warning-box">
+        <strong>Warning:</strong> This only resets settings saved on this device. It does not delete game files.
+      </div>
+    </section>
+
+    <div class="save-message" id="save-message">
+      SETTINGS SAVED
+    </div>
+
+  </main>
+
+  <div class="bottom-bar">
+    <button class="btn" onclick="goBack()">← BACK TO DASHBOARD</button>
+    <button class="btn danger" id="reset-btn">RESET SETTINGS</button>
+  </div>
+
+</div>
+
+<script>
+const textToggle = document.getElementById("text-toggle");
+const motionToggle = document.getElementById("motion-toggle");
+const tipsToggle = document.getElementById("tips-toggle");
+const autosaveToggle = document.getElementById("autosave-toggle");
+
+const screenMode = document.getElementById("screen-mode");
+const difficulty = document.getElementById("difficulty");
+const languageSelect = document.getElementById("language-select");
+const languageToggle = document.getElementById("language-toggle");
+
+const resetBtn = document.getElementById("reset-btn");
+const saveMessage = document.getElementById("save-message");
+
+const SETTINGS_KEY = "byterush-settings";
+
+const defaultSettings = {
+  largeText: false,
+  reducedMotion: false,
+  missionTips: true,
+  autoSave: true,
+  screenMode: "normal",
+  difficulty: "beginner",
+  language: "en"
+};
+
+function getSettings() {
+  const saved = localStorage.getItem(SETTINGS_KEY);
+
+  if (!saved) {
+    return { ...defaultSettings };
+  }
+
+  try {
+    return { ...defaultSettings, ...JSON.parse(saved) };
+  } catch {
+    return { ...defaultSettings };
+  }
+}
+
+function saveSettings(settings) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function showSaveMessage() {
+  saveMessage.style.display = "block";
+
+  clearTimeout(window.saveTimer);
+
+  window.saveTimer = setTimeout(() => {
+    saveMessage.style.display = "none";
+  }, 1600);
+}
+
+function setToggleState(button, isOn, onText, offText) {
+  button.innerText = isOn ? onText : offText;
+
+  if (isOn) {
+    button.classList.remove("off");
+  } else {
+    button.classList.add("off");
+  }
+}
+
+function applySettings(settings) {
+  document.body.classList.toggle("large-text", settings.largeText);
+  document.body.classList.toggle("reduced-motion", settings.reducedMotion);
+
+  setToggleState(textToggle, settings.largeText, "TEXT ON", "TEXT OFF");
+  setToggleState(motionToggle, settings.reducedMotion, "MOTION ON", "MOTION OFF");
+  setToggleState(tipsToggle, settings.missionTips, "TIPS ON", "TIPS OFF");
+  setToggleState(autosaveToggle, settings.autoSave, "SAVE ON", "SAVE OFF");
+
+  screenMode.value = settings.screenMode;
+  difficulty.value = settings.difficulty;
+  languageSelect.value = settings.language;
+
+  languageToggle.innerText = settings.language === "en" ? "FR" : "EN";
+}
+
+function updateSetting(key, value) {
+  const settings = getSettings();
+  settings[key] = value;
+
+  saveSettings(settings);
+  applySettings(settings);
+  showSaveMessage();
+}
+
+textToggle.addEventListener("click", () => {
+  const settings = getSettings();
+  updateSetting("largeText", !settings.largeText);
+});
+
+motionToggle.addEventListener("click", () => {
+  const settings = getSettings();
+  updateSetting("reducedMotion", !settings.reducedMotion);
+});
+
+tipsToggle.addEventListener("click", () => {
+  const settings = getSettings();
+  updateSetting("missionTips", !settings.missionTips);
+});
+
+autosaveToggle.addEventListener("click", () => {
+  const settings = getSettings();
+  updateSetting("autoSave", !settings.autoSave);
+});
+
+screenMode.addEventListener("change", () => {
+  updateSetting("screenMode", screenMode.value);
+});
+
+difficulty.addEventListener("change", () => {
+  updateSetting("difficulty", difficulty.value);
+});
+
+languageSelect.addEventListener("change", () => {
+  updateSetting("language", languageSelect.value);
+});
+
+languageToggle.addEventListener("click", () => {
+  const settings = getSettings();
+  const nextLanguage = settings.language === "en" ? "fr" : "en";
+  updateSetting("language", nextLanguage);
+});
+
+resetBtn.addEventListener("click", () => {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(defaultSettings));
+  applySettings(defaultSettings);
+  showSaveMessage();
+});
+
+function goBack() {
+  window.location.href = "dashboard.html";
+}
+
+applySettings(getSettings());
+</script>
+
+</body>
+</html>

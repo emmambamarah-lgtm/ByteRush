@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel Bistro | ByteRush</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="projects.css" />
+</head>
+<body>
+  <script src="projects.js"></script>
+
+  <script>
+    ByteRushProjects.createProjectPage({
+      projectId: "project-2",
+      title: "Pixel Bistro",
+      difficulty: "Beginner",
+      xp: 50,
+      completeTitle: "Pixel Bistro Online",
+      completeMessage: "You created a styled restaurant menu.",
+      startHTML: "",
+      startCSS: "",
+      startJS: "",
+      steps: [
+        {
+          title: "Create the Menu Card",
+          objective: "Create the main box for your restaurant menu.",
+          why: "The menu card will hold the restaurant title, description, food items, and prices.",
+          code: `<div class="menu-card">
+
+</div>`,
+          preview: "An empty menu card should appear.",
+          hint: "Type this in the HTML box.",
+          check: function (api) {
+            return /class=["']menu-card["']/i.test(api.html)
+              ? { pass: true, message: "STEP ONLINE: Menu card detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Add a div with class=\"menu-card\"." };
+          }
+        },
+        {
+          title: "Add the Restaurant Name",
+          objective: "Give your restaurant a name.",
+          why: "The title tells people what the menu belongs to.",
+          code: `<h2>Pixel Bistro</h2>`,
+          preview: "The restaurant name should appear at the top of the menu.",
+          hint: "Use an h2 tag.",
+          check: function (api) {
+            return /<h2[\s>]/i.test(api.html)
+              ? { pass: true, message: "STEP ONLINE: Restaurant title detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Add an h2 title for your restaurant." };
+          }
+        },
+        {
+          title: "Add a Short Description",
+          objective: "Add one sentence that describes the restaurant.",
+          why: "A short description helps the menu feel real.",
+          code: `<p>Retro bites for hungry coders.</p>`,
+          preview: "A short sentence should appear under the restaurant title.",
+          hint: "Use a p tag under the title.",
+          check: function (api) {
+            return /<p[\s>]/i.test(api.html)
+              ? { pass: true, message: "STEP ONLINE: Menu description detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Add a paragraph tag for the menu description." };
+          }
+        },
+        {
+          title: "Add the First Food Item",
+          objective: "Add the first item to the menu.",
+          why: "A menu item should have a food name and a price.",
+          code: `<div class="menu-item">
+  <span>Pixel Burger</span>
+  <strong>$8</strong>
+</div>`,
+          preview: "The first food item and price should appear in the preview.",
+          hint: "Use class=\"menu-item\" for the row.",
+          check: function (api) {
+            const matches = api.html.match(/class=["']menu-item["']/gi) || [];
+            return matches.length >= 1
+              ? { pass: true, message: "STEP ONLINE: First menu item detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Add one menu item with class=\"menu-item\"." };
+          }
+        },
+        {
+          title: "Add Two More Food Items",
+          objective: "Add more choices to the menu.",
+          why: "A real menu needs more than one option.",
+          code: `<div class="menu-item">
+  <span>Code Fries</span>
+  <strong>$4</strong>
+</div>
+
+<div class="menu-item">
+  <span>Debug Soda</span>
+  <strong>$3</strong>
+</div>`,
+          preview: "The menu should now show three food items.",
+          hint: "You need at least three menu-item rows total.",
+          check: function (api) {
+            const matches = api.html.match(/class=["']menu-item["']/gi) || [];
+            return matches.length >= 3
+              ? { pass: true, message: "STEP ONLINE: Three menu items detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Add at least three elements with class=\"menu-item\"." };
+          }
+        },
+        {
+          title: "Style the Menu Card",
+          objective: "Make the menu look like a retro game menu.",
+          why: "CSS gives the menu its background, border, spacing, and color.",
+          code: `.menu-card {
+  background: #07111D;
+  border: 2px dashed #FACC15;
+  padding: 20px;
+  border-radius: 16px;
+}`,
+          preview: "The menu should now have a dark panel, yellow dashed border, and rounded corners.",
+          hint: "Type this in the CSS box.",
+          check: function (api) {
+            const css = api.normalize(api.css);
+            const pass = css.includes(".menu-card") &&
+              css.includes("background") &&
+              css.includes("border") &&
+              css.includes("padding") &&
+              css.includes("border-radius");
+
+            return pass
+              ? { pass: true, message: "STEP ONLINE: Menu card styling detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Style .menu-card with background, border, padding, and border-radius." };
+          }
+        },
+        {
+          title: "Style the Menu Rows",
+          objective: "Make each food row easier to read.",
+          why: "Flexbox can place the food name on the left and the price on the right.",
+          code: `.menu-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(230, 255, 233, 0.2);
+  padding: 10px 0;
+}`,
+          preview: "Food names should appear on the left and prices on the right.",
+          hint: "Use display: flex and justify-content: space-between.",
+          check: function (api) {
+            const css = api.normalize(api.css);
+            const pass = css.includes(".menu-item") &&
+              css.includes("display") &&
+              css.includes("flex") &&
+              css.includes("justify-content") &&
+              css.includes("space-between");
+
+            return pass
+              ? { pass: true, message: "STEP ONLINE: Menu row flex styling detected." }
+              : { pass: false, message: "SYSTEM CHECK FAILED: Style .menu-item with display: flex and justify-content: space-between." };
+          }
+        },
+        {
+          title: "Complete the Build",
+          objective: "Finish your restaurant menu.",
+          why: "You built a real menu using structure and design.",
+          code: "",
+          preview: "The full menu should appear with a title, description, food items, prices, and styling.",
+          hint: "Check this final step, then press Complete Project.",
+          check: function () {
+            return { pass: true, message: "STEP ONLINE: Pixel Bistro ready for completion." };
+          }
+        }
+      ]
+    });
+  </script>
+</body>
+</html>

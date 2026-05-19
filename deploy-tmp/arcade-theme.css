@@ -1,0 +1,243 @@
+/* =====================================================
+   BYTERUSH — PREMIUM DARK CYBERPIXEL THEME
+   Clean • Sharp • No Neon
+   ===================================================== */
+
+:root {
+  --bg: #03080F;
+  --panel: #050B12;
+  --panel-light: #08111C;
+
+  --text: #39FF5A;
+  --muted: #8FBF98;
+
+  --accent: #39FF5A;
+  --danger: #FF3B3B;
+  --border: #1F3A2A;
+}
+#music-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+
+  background: #050B12;
+  color: #39FF5A;
+
+  border: 1px solid rgba(57,255,90,0.3);
+
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+#music-btn:hover {
+  background: #39FF5A;
+  color: #03080F;
+}
+
+/* PAGE ACCENTS */
+.theme-home,
+.theme-html,
+.theme-css,
+.theme-js,
+.theme-projects,
+.theme-challenges,
+.theme-account {
+  --accent: #39FF5A;
+}
+
+/* BASE */
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: monospace, system-ui, sans-serif;
+}
+
+/* TEXT */
+h1, h2, h3, h4 {
+  color: var(--text) !important;
+  margin-bottom: 8px;
+}
+
+p {
+  color: var(--muted) !important;
+  line-height: 1.6;
+}
+
+/* LAYOUT */
+.dashboard-layout {
+  gap: 24px !important;
+  padding: 24px !important;
+}
+
+.main-area {
+  padding: 28px !important;
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--panel) !important;
+  border-right: 1px solid var(--border) !important;
+  padding: 20px !important;
+}
+
+.logo {
+  color: var(--text) !important;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-decoration: none;
+}
+
+/* NAV */
+.nav-item {
+  color: var(--muted) !important;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: var(--panel-light) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--accent) !important;
+}
+
+/* PANELS */
+.hero-panel,
+.panel,
+.stats-panel,
+.bytebot,
+.step-box,
+.challenge-box,
+.preview-box {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+}
+
+/* CARDS */
+.mission-card,
+.project-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  padding: 20px !important;
+  transition: 0.2s;
+}
+
+.mission-card:hover,
+.project-card:hover {
+  border-color: var(--accent) !important;
+  transform: translateY(-2px);
+}
+
+/* CARD ICON */
+.card-icon {
+  color: var(--accent) !important;
+}
+
+/* STATS */
+.stat-box {
+  background: var(--panel-light) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 12px;
+}
+
+/* BUTTONS */
+button {
+  background: transparent !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
+  border-radius: 6px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+button:hover {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+}
+
+/* DANGER BUTTONS */
+.reset-btn,
+.danger-btn {
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+.reset-btn:hover,
+.danger-btn:hover {
+  background: var(--danger) !important;
+  color: var(--bg) !important;
+}
+
+/* EDITOR */
+textarea {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: monospace;
+}
+
+/* PREVIEW */
+iframe,
+.preview,
+.preview-box {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px;
+}
+
+/* FEEDBACK */
+.success {
+  color: var(--accent) !important;
+}
+
+.error,
+#warning {
+  color: var(--danger) !important;
+}
+
+.progress {
+  color: var(--accent) !important;
+}
+
+/* HIGHLIGHT */
+.highlight {
+  color: var(--danger) !important;
+  font-weight: bold;
+}
+
+/* OVERLAY */
+#completion-overlay {
+  background: rgba(3, 8, 15, 0.92) !important;
+}
+
+.overlay-text {
+  color: var(--text) !important;
+}
+
+.badge {
+  color: var(--accent) !important;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .dashboard-layout,
+  .editor-layout,
+  .arena-layout {
+    grid-template-columns: 1fr !important;
+  }
+}

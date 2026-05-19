@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ByteRush | Project Lab</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="project-files/projects.css" />
+</head>
+
+<body>
+  <main class="lab-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">BYTE RUSH</p>
+        <h1>PROJECT LAB</h1>
+      </div>
+
+      <div class="topbar-stats">
+        <div class="stat-box">
+          <span>XP</span>
+          <strong id="xpDisplay">0</strong>
+        </div>
+
+        <div class="stat-box">
+          <span>PLAYER</span>
+          <strong id="playerNameDisplay">Code Explorer</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="intro-panel">
+      <span class="game-label">SYSTEM MESSAGE</span>
+      <h2>Build real systems with HTML, CSS, and JavaScript.</h2>
+      <p>
+        You already trained in the arenas. Now you will build real beginner-friendly projects step by step.
+        Every project is open. Pick one and start building.
+      </p>
+    </section>
+
+    <section class="project-grid">
+      <a class="project-card" href="project-files/project-1.html" data-project-card="project-1">
+        <div class="card-topline">
+          <span class="game-label">PROJECT 01</span>
+          <span class="status-pill" data-status-label="project-1">Not Started</span>
+        </div>
+        <h2>Identity Badge</h2>
+        <p>Build a player profile card.</p>
+        <div class="card-meta">
+          <span>Beginner</span>
+          <span>HTML + CSS</span>
+        </div>
+        <div class="card-footer">
+          <span>+50 XP</span>
+          <span>OPEN BUILD →</span>
+        </div>
+      </a>
+
+      <a class="project-card" href="project-files/project-2.html" data-project-card="project-2">
+        <div class="card-topline">
+          <span class="game-label">PROJECT 02</span>
+          <span class="status-pill" data-status-label="project-2">Not Started</span>
+        </div>
+        <h2>Pixel Bistro</h2>
+        <p>Create a retro restaurant menu.</p>
+        <div class="card-meta">
+          <span>Beginner</span>
+          <span>HTML + CSS</span>
+        </div>
+        <div class="card-footer">
+          <span>+50 XP</span>
+          <span>OPEN BUILD →</span>
+        </div>
+      </a>
+
+      <a class="project-card" href="project-files/project-3.html" data-project-card="project-3">
+        <div class="card-topline">
+          <span class="game-label">PROJECT 03</span>
+          <span class="status-pill" data-status-label="project-3">Not Started</span>
+        </div>
+        <h2>Energy Counter</h2>
+        <p>Build a working click counter.</p>
+        <div class="card-meta">
+          <span>Beginner JS</span>
+          <span>HTML + CSS + JS</span>
+        </div>
+        <div class="card-footer">
+          <span>+75 XP</span>
+          <span>OPEN BUILD →</span>
+        </div>
+      </a>
+
+      <a class="project-card" href="project-files/project-4.html" data-project-card="project-4">
+        <div class="card-topline">
+          <span class="game-label">PROJECT 04</span>
+          <span class="status-pill" data-status-label="project-4">Not Started</span>
+        </div>
+        <h2>Mission Tracker</h2>
+        <p>Build a simple task tracker.</p>
+        <div class="card-meta">
+          <span>Intermediate</span>
+          <span>HTML + CSS + JS</span>
+        </div>
+        <div class="card-footer">
+          <span>+100 XP</span>
+          <span>OPEN BUILD →</span>
+        </div>
+      </a>
+
+      <a class="project-card" href="project-files/project-5.html" data-project-card="project-5">
+        <div class="card-topline">
+          <span class="game-label">PROJECT 05</span>
+          <span class="status-pill" data-status-label="project-5">Not Started</span>
+        </div>
+        <h2>Skin Reactor</h2>
+        <p>Create a theme switching system.</p>
+        <div class="card-meta">
+          <span>Intermediate</span>
+          <span>HTML + CSS + JS</span>
+        </div>
+        <div class="card-footer">
+          <span>+100 XP</span>
+          <span>OPEN BUILD →</span>
+        </div>
+      </a>
+
+      <a class="project-card" href="project-files/project-6.html" data-project-card="project-6">
+        <div class="card-topline">
+          <span class="game-label">PROJECT 06</span>
+          <span class="status-pill" data-status-label="project-6">Not Started</span>
+        </div>
+        <h2>Web Systems Boss</h2>
+        <p>Combine everything into one mini app.</p>
+        <div class="card-meta">
+          <span>Final Build</span>
+          <span>HTML + CSS + JS</span>
+        </div>
+        <div class="card-footer">
+          <span>+150 XP</span>
+          <span>OPEN BUILD →</span>
+        </div>
+      </a>
+    </section>
+
+    <footer class="bottom-actions">
+      <a href="dashboard.html" class="secondary-btn">← RETURN TO DASHBOARD</a>
+    </footer>
+  </main>
+
+  <script src="project-files/projects.js"></script>
+  <script>
+    ByteRushProjects.initDashboard();
+  </script>
+</body>
+</html>
